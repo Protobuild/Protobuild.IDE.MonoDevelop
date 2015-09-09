@@ -1,0 +1,28 @@
+<Addin id          = "Protobuild.MonoDevelop"
+       name        = "Protobuild for MonoDevelop"
+       namespace   = "MonoDevelop"
+       author      = "June Rhodes"
+       copyright   = "MIT X11"
+       url         = "http://www.monodevelop.com"
+       description = "Adds support for Protobuild modules inside MonoDevelop.  Protobuild is a project generation system for cross-platform .NET projects."
+       category    = "Language bindings"
+       version     = "4.2.3">
+
+    <Runtime>
+        <Import assembly = "Protobuild.MonoDevelop.dll"/>
+    </Runtime>
+
+    <Dependencies>
+        <Addin id = "Core"          version = "4.2.3"/>
+        <Addin id = "Ide"           version = "4.2.3"/>
+        <Addin id = "SourceEditor2" version = "4.2.3"/>
+    </Dependencies>
+    
+    <Extension path = "/MonoDevelop/ProjectModel/FileFormats">
+      <FileFormat id = "Protobuild" 
+        class = "MonoDevelop.Projects.Formats.Protobuild.ProtobuildFileFormat"
+        name = "Protobuild"
+        canDefault = "true" />
+    </Extension>
+	
+</Addin>

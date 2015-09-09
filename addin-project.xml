@@ -1,0 +1,9 @@
+<Addin id="Protobuild.IDE.MonoDevelop">
+    <Header>
+        <Name>Protobuild support (cross-platform projects)</Name>
+        <Description>Provides support for the Protobuild project generator, which allows you to develop cross-platform projects without requiring multiple projects files per platform.</Description>
+        <Author>June Rhodes</Author>
+        <Url>http://protobuild.org/</Url>
+        <UpdateRank>Important</UpdateRank>
+    </Header>
+</Addin>

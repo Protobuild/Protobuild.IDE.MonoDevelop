@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EE5BA96B-4FA5-41ED-88BC-E8FD07EB62FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Protobuild.MonoDevelop</AssemblyName>
+    <RootNamespace>Protobuild.MonoDevelop</RootNamespace>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\build</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <ConsolePause>false</ConsolePause>
+    <Execution>
+      <Execution clr-version="Net_2_0" />
+    </Execution>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\build</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Execution>
+      <Execution clr-version="Net_2_0" />
+    </Execution>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoDevelop.Core">
+      <HintPath>..\lib\MonoDevelop.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoDevelop.Ide">
+      <HintPath>..\lib\MonoDevelop.Ide.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+    </Reference>
+    <Reference Include="System.Core">
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="OpenTK">
+      <HintPath>..\lib\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt">
+      <HintPath>..\lib\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt.Gtk">
+      <HintPath>..\lib\Xwt.Gtk.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Addins">
+      <HintPath>..\..\..\main\build\bin\Mono.Addins.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\main\build\bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="MonoDevelop.Ide\AppDomainBasedProtobuildEditorHost.cs" />
+    <Compile Include="MonoDevelop.Ide\AppDomainDisplayBinding.cs" />
+    <Compile Include="MonoDevelop.Ide\AppDomainOpenedFile.cs" />
+    <Compile Include="MonoDevelop.Ide\AppDomainOpenedFileList.cs" />
+    <Compile Include="MonoDevelop.Ide\AppDomainViewContent.cs" />
+    <Compile Include="MonoDevelop.Ide\GtkPlugBasedProtobuildEditorHost.cs" />
+    <Compile Include="MonoDevelop.Ide\GtkPlugNetworkRequestLayer.cs" />
+    <Compile Include="MonoDevelop.Ide\GtkPlugOpenedFile.cs" />
+    <Compile Include="MonoDevelop.Ide\GtkPlugOpenedFileList.cs" />
+    <Compile Include="MonoDevelop.Ide\GtkSocketDisplayBinding.cs" />
+    <Compile Include="MonoDevelop.Ide\GtkSocketViewContent.cs" />
+    <Compile Include="MonoDevelop.Ide\IOpenedFileList.cs" />
+    <Compile Include="MonoDevelop.Ide\IProtobuildEditorHost.cs" />
+    <Compile Include="MonoDevelop.Ide\ProtobuildEditorHost.cs" />
+    <Compile Include="MonoDevelop.Ide\ProtobuildIDEEditorDomainBehaviour.cs" />
+    <Compile Include="MonoDevelop.Ide\ProtobuildStartup.cs" />
+    <Compile Include="MonoDevelop.Ide\ProxiedGraphicsContext.cs" />
+    <Compile Include="MonoDevelop.Ide\ProxiedWindowInfo.cs" />
+    <Compile Include="MonoDevelop.Ide.Commands\ProtobuildCommands.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildContentSourceRuleNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildDefinitionNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildDependenciesNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildExternalRefNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildModuleInterfaceNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildModuleNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildPackageNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildPackagesNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildPlatformFilterNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildProjectFileNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildReferenceNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildReferencesNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildServiceFilterNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildServicesNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildSubmoduleNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Ide.Projects.Protobuild.Templates\BuiltinProtobuildModuleTemplateAttribute.cs" />
+    <Compile Include="MonoDevelop.Ide.Projects.Protobuild.Templates\ConsoleProtobuildModuleTemplate.cs" />
+    <Compile Include="MonoDevelop.Ide.Projects.Protobuild.Templates\EmptyProtobuildModuleTemplate.cs" />
+    <Compile Include="MonoDevelop.Ide.Projects.Protobuild.Templates\LibraryProtobuildModuleTemplate.cs" />
+    <Compile Include="MonoDevelop.Ide.Projects.Protobuild.Templates\OnlineProtobuildModuleTemplate.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\IProtobuildExternalRefOrServiceFilter.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\MarshalledProgressMonitor.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildAppDomain.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildContentSourceRule.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinition.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinitionHandler.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinitionInfo.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDependencies.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDependency.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildExternalRef.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildExternalRefType.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildFileFormat.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildModule.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildModuleInfo.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildPackage.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildPackageRef.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildPackages.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildPlatformFilter.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildProjectFile.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildReference.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildReferences.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildService.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildServiceFilter.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildServices.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildSubmodule.cs" />
+    <Compile Include="MonoDevelop.Protobuild\FinalProtobuildModuleConfigurationPage.cs" />
+    <Compile Include="MonoDevelop.Protobuild\GtkNewProtobuildModuleDialogBackend.UI.cs" />
+    <Compile Include="MonoDevelop.Protobuild\GtkNewProtobuildModuleDialogBackend.cs" />
+    <Compile Include="MonoDevelop.Protobuild\GtkProtobuildModuleConfigurationWidget.cs" />
+    <Compile Include="MonoDevelop.Protobuild\GtkProtobuildModuleCreationWidget.cs" />
+    <Compile Include="MonoDevelop.Protobuild\GtkProtobuildModuleFolderPreviewWidget.cs" />
+    <Compile Include="MonoDevelop.Protobuild\INewProtobuildModuleDialogBackend.cs" />
+    <Compile Include="MonoDevelop.Protobuild\INewProtobuildModuleDialogController.cs" />
+    <Compile Include="MonoDevelop.Protobuild\IProtobuildModuleTemplate.cs" />
+    <Compile Include="MonoDevelop.Protobuild\NewProtobuildModuleDialog.cs" />
+    <Compile Include="MonoDevelop.Protobuild\ProtobuildModuleCreationPage.cs" />
+    <Compile Include="MonoDevelop.Protobuild\ProtobuildSolutionTemplate.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Protobuild.GtkProtobuildModuleFolderPreviewWidget.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Protobuild.GtkProtobuildModuleConfigurationWidget.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Protobuild.GtkProtobuildModuleCreationWidget.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Protobuild.MonoDevelop.addin.xml">
+      <LogicalName>PyBinding.addin.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader Text="${FileName}&#xA;&#xA;Copyright (c) ${Year} ${CopyrightHolder}&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE." IncludeInNewFiles="True" />
+          <TextStylePolicy NoTabsAfterNonTabs="True" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-python" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\GLWidget\GLWidget.csproj">
+      <Project>{34627299-AB51-4C99-B5DA-C03EB751B387}</Project>
+      <Name>GLWidget</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
