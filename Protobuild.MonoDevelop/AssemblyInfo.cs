@@ -3,7 +3,7 @@
 using System.Reflection;
 
 [assembly: AssemblyProduct ("MonoDevelop")]
-[assembly: AssemblyTitle ("Python Language Binding")]
-[assembly: AssemblyDescription ("Python Language binding")]
-[assembly: AssemblyVersion ("2.6")]
+[assembly: AssemblyTitle ("Protobuild Support")]
+[assembly: AssemblyDescription ("Protobuild Support")]
+[assembly: AssemblyVersion ("1.0")]
 [assembly: AssemblyCopyright ("MIT X11")]

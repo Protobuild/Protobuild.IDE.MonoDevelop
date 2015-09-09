@@ -5,17 +5,16 @@
        copyright   = "MIT X11"
        url         = "http://www.monodevelop.com"
        description = "Adds support for Protobuild modules inside MonoDevelop.  Protobuild is a project generation system for cross-platform .NET projects."
-       category    = "Language bindings"
-       version     = "4.2.3">
+       category    = "IDE extensions"
+       version     = "1.0.0">
 
     <Runtime>
         <Import assembly = "Protobuild.MonoDevelop.dll"/>
     </Runtime>
 
     <Dependencies>
-        <Addin id = "Core"          version = "4.2.3"/>
-        <Addin id = "Ide"           version = "4.2.3"/>
-        <Addin id = "SourceEditor2" version = "4.2.3"/>
+        <Addin id = "Core"          version = "5.9.4"/>
+        <Addin id = "Ide"           version = "5.9.4"/>
     </Dependencies>
     
     <Extension path = "/MonoDevelop/ProjectModel/FileFormats">
