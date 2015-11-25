@@ -26,9 +26,11 @@ namespace MonoDevelop.Ide.Commands
     {
         protected override void Run()
         {
+            #if MONODEVELOP_5
             var newProjectDialog = new NewProtobuildModuleDialog();
             newProjectDialog.OpenSolution = true;
             newProjectDialog.Show();
+            #endif
         }
     }
 	

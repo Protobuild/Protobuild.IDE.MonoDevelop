@@ -13,15 +13,12 @@
     </Runtime>
 
     <Dependencies>
-        <Addin id = "Core"          version = "5.9.4"/>
-        <Addin id = "Ide"           version = "5.9.4"/>
+        <Addin id = "Core"          version = "6.0"/>
+        <Addin id = "Ide"           version = "6.0"/>
     </Dependencies>
     
-    <Extension path = "/MonoDevelop/ProjectModel/FileFormats">
-      <FileFormat id = "Protobuild" 
-        class = "MonoDevelop.Projects.Formats.Protobuild.ProtobuildFileFormat"
-        name = "Protobuild"
-        canDefault = "true" />
+    <Extension path = "/MonoDevelop/ProjectModel/WorkspaceObjectReaders">
+      <Class id="Protobuild" class = "MonoDevelop.Projects.Formats.Protobuild.ProtobuildSerializationExtension" />
     </Extension>
     
     <Extension path = "/MonoDevelop/Ide/Commands">
@@ -68,24 +65,23 @@
       <Extension path = "/MonoDevelop/Ide/StartupHandlers">
     <Class class = "MonoDevelop.Ide.ProtobuildStartup"/>
     </Extension>
-<Extension path = "/MonoDevelop/Ide/Pads">
-<SolutionPad id = "ProjectPad" _label = "Solution" icon = "md-solution" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProjectSolutionPad" defaultLayout="*" defaultPlacement = "Left">
-	
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildModuleNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildSubmoduleNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackagesNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackageNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDefinitionNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildProjectFileNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferenceNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferencesNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDependenciesNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServicesNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentSourceRuleNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPlatformFilterNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServiceFilterNodeBuilder"/>
-    <NodeBuilder class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalRefNodeBuilder"/>
-  </SolutionPad>
+<Extension path = "/MonoDevelop/Ide/Pads/ProjectPad">
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildModuleNodeBuilderExtension" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildModuleNodeBuilderExtension"/>
+    <!---
+		<NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildSubmoduleNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildSubmoduleNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackagesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackagesNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackageNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackageNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDefinitionNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDefinitionNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildProjectFileNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildProjectFileNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferenceNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferenceNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferencesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferencesNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDependenciesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDependenciesNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServicesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServicesNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentSourceRuleNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentSourceRuleNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPlatformFilterNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPlatformFilterNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServiceFilterNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServiceFilterNodeBuilder"/>
+    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalRefNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalRefNodeBuilder"/>
+    -->
   </Extension>
   <Extension path = "/MonoDevelop/Ide/ContextMenu/ProjectPad">
   <SeperatorItem id = "ProtobuildPackageSectionStart"/>

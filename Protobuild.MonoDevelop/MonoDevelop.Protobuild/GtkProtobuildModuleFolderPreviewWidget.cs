@@ -27,6 +27,8 @@ using System;
 using Gtk;
 using MonoDevelop.Components;
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Protobuild
 {
 	[System.ComponentModel.ToolboxItem (true)]
@@ -159,3 +161,4 @@ namespace MonoDevelop.Protobuild
 	}
 }
 
+#endif

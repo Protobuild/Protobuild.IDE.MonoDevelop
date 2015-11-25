@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MonoDevelop.Core;
 
+#if FALSE
+
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
     class MarshalledProgressMonitor : MarshalByRefObject, IProgressMonitor
@@ -92,3 +94,5 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 		}
     }
 }
+
+#endif

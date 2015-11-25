@@ -30,6 +30,8 @@ using ProjectCreateParameters = MonoDevelop.Projects.ProjectCreateParameters;
 using SolutionFolder = MonoDevelop.Projects.SolutionFolder;
 using MonoDevelop.Ide.Projects;
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Protobuild
 {
     public class FinalProtobuildModuleConfigurationPage : FinalProjectConfigurationPage
@@ -197,3 +199,4 @@ namespace MonoDevelop.Protobuild
 	}
 }
 
+#endif

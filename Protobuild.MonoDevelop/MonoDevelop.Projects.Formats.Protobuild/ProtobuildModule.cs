@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Execution;
 using MonoDevelop.Projects.Extensions;
@@ -56,12 +57,12 @@ namespace MonoDevelop.Projects.Formats.Protobuild
         public string ActiveConfiguration { get; set; }
 
 		public Action AfterSave { get; set; }
-
+        /*
 		SolutionFolder IProtobuildModule.RootFolder 
 		{
 			get { return this.RootFolder; }
 			set { this.RootFolder = value; }
-		}
+		}*/
 
 		public string SupportedPlatformsString
 		{
@@ -84,17 +85,17 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			}
 		}
 
-	    public void Load(string path, IProgressMonitor monitor)
+	    public async Task Load(string path, ProgressMonitor monitor)
 	    {
 			if (appDomain != null)
 			{
-                monitor.BeginStepTask ("Stopping Protobuild...", 1, 1);
+                //monitor.BeginStepTask ("Stopping Protobuild...", 1, 1);
 				appDomain.UnloadAppDomain();
 				appDomain.ProtobuildChangedEvent -= HandleProtobuildChangedEvent;
 				appDomain = null;
 			}
 
-            monitor.BeginStepTask("Starting Protobuild...", 1, 1);
+            //monitor.BeginStepTask("Starting Protobuild...", 1, 1);
 			appDomain = new ProtobuildAppDomain(path);
 			appDomain.ProtobuildChangedEvent += HandleProtobuildChangedEvent;
             latestModuleInfo = appDomain.LoadModule(monitor);
@@ -105,13 +106,13 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             // projects that can be used for the type system.  Also we generate before
             // loading projects because generation might trigger package resolution.
 	        ActiveConfiguration = appDomain.HostPlatform;
-            EnsureProjectsAreGeneratedForPlatform(appDomain.HostPlatform, monitor);
+            await EnsureProjectsAreGeneratedForPlatform(appDomain.HostPlatform, monitor);
 
-            monitor.BeginStepTask("Loading projects...", 1, 1);
+            //monitor.BeginStepTask("Loading projects...", 1, 1);
 		    ReloadProjects ();
 		}
 
-        public void SaveModule(FilePath file, IProgressMonitor monitor)
+        public void SaveModule(FilePath file, ProgressMonitor monitor)
         {
             try {
                 monitor.BeginTask ("Saving module " + latestModuleInfo.Name + "...", 1);
@@ -120,7 +121,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
                     latestModuleInfo.DefaultStartupProject = this.StartupItem.Name;
                 }
 
-                appDomain.SaveModule (latestModuleInfo, monitor);
+                appDomain.SaveModule (latestModuleInfo);
             }
             catch (Exception ex) {
                 monitor.ReportError ("Failed to save module " + latestModuleInfo.Name, ex);
@@ -150,10 +151,14 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			}
 		}
 
+        #if MONODEVELOP_5
+
 	    public override FileFormat FileFormat
 	    {
 	        get { return Services.ProjectService.FileFormats.GetFileFormat ("protobuild"); }
 	    }
+
+        #endif
 
 	    void HandleProtobuildChangedEvent (object sender, EventArgs e)
 		{
@@ -238,7 +243,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             {
                 var definitionItem = new ProtobuildDefinition(moduleInfo, definition, folder);
                 definitionItem.ParentSolution = this;
-                definitionItem.SetItemHandler(new MSBuildHandler(definition.Guid.ToString(), definition.Guid.ToString()));
+                //definitionItem.SetItemHandler(new MSBuildHandler(definition.Guid.ToString(), definition.Guid.ToString()));
                 folder.Definitions.Add(definitionItem);
 
 				// Add the definition to the root folder as well so that events
@@ -255,6 +260,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
                 }
             }
 	    }
+
+        #if MONODEVELOP_5
 
 	    public override string Name
 	    {
@@ -274,7 +281,9 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				Built(this, new SolutionItemEventArgs(null, this));
 			}
 			return result;
-	    }
+        }
+
+        #endif
 
 		public event SolutionItemEventHandler Built;
 
@@ -282,10 +291,10 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 		public event SolutionItemEventHandler Generated;
 
-	    public void Generate (IProgressMonitor monitor, ConfigurationSelector configuration)
+	    public async void Generate (ProgressMonitor monitor, ConfigurationSelector configuration)
         {
             var platform = configuration.GetConfiguration(this).Id;
-			EnsureProjectsAreGeneratedForPlatform(platform, monitor);
+			await EnsureProjectsAreGeneratedForPlatform(platform, monitor);
 			if (Generated != null)
 			{
 				Generated(this, new SolutionItemEventArgs(null, this));
@@ -306,64 +315,57 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			}
 		}
 
-        private void EnsureProjectsAreGeneratedForPlatform(string platform, IProgressMonitor monitor)
+        private async Task EnsureProjectsAreGeneratedForPlatform(string platform, ProgressMonitor monitor)
         {
             var timestamp = DateTime.UtcNow;
             lock (generateRequestLock) {
                 generateRequestTime[platform] = timestamp;
             }
 
-            lock (generateLock) {
-                if (!shadowSolutions.ContainsKey (platform)) {
+            await Task.Run(() => 
+            {
+                lock (generateLock) {
+                    if (!shadowSolutions.ContainsKey (platform)) {
 
-                    lock (generateRequestLock) {
-                        var generateAt = generateRequestTime.ContainsKey (platform)
-                            ? generateRequestTime[platform]
-                            : (DateTime?) null;
-                        if (generateAt == null || timestamp < generateAt) {
-                            // Request is not needed any more.
-                            return;
+                        lock (generateRequestLock) {
+                            var generateAt = generateRequestTime.ContainsKey (platform)
+                                ? generateRequestTime[platform]
+                                : (DateTime?) null;
+                            if (generateAt == null || timestamp < generateAt) {
+                                // Request is not needed any more.
+                                return;
+                            }
+                            generateRequestTime.Remove (platform);
                         }
-                        generateRequestTime.Remove (platform);
-                    }
 
-                    try {
-                        monitor.BeginTask ("Generating .NET projects for " + platform + "...", 1);
-                        appDomain.RunExecutableWithArguments (latestModuleInfo, "--generate " + platform, monitor);
-                    }
-                    catch (Exception ex) {
-                        monitor.ReportError ("Failed to generate projects", ex);
-                        throw;
-                    }
-                    finally {
-                        monitor.EndTask ();
-                    }
+                        try {
+                            monitor.BeginTask ("Generating .NET projects for " + platform + "...", 1);
+                            appDomain.RunExecutableWithArguments (latestModuleInfo, "--generate " + platform);
+                        }
+                        catch (Exception ex) {
+                            monitor.ReportError ("Failed to generate projects", ex);
+                            throw;
+                        }
+                        finally {
+                            monitor.EndTask ();
+                        }
 
-                    try {
-                        monitor.BeginTask ("Caching .NET solution for " + platform + "...", 1);
-                        var path = Path.Combine (latestModuleInfo.Path,
-                            latestModuleInfo.Name + "." + platform + ".sln");
-                        var formats = Services.ProjectService.FileFormats.GetFileFormats (path, typeof (Solution));
-
-                        if (formats.Length == 0)
-                            throw new InvalidOperationException ("Unknown file format: " + path);
-
-                        var format = formats[0];
-                        object obj = format.Format.ReadFile (path, typeof (Solution), monitor);
-                        if (obj == null)
-                            throw new InvalidOperationException ("Invalid file format: " + path);
-
-                        shadowSolutions[platform] = (Solution) obj;
-                    }
-                    catch (Exception ex) {
-                        monitor.ReportError ("Failed to cache solution", ex);
-                        throw;
-                    }
-                    finally {
-                        monitor.EndTask ();
+                        try {
+                            monitor.BeginTask ("Caching .NET solution for " + platform + "...", 1);
+                            var path = Path.Combine (latestModuleInfo.Path,
+                                latestModuleInfo.Name + "." + platform + ".sln");
+                            shadowSolutions[platform] = (Solution)Services.ProjectService.ReadWorkspaceItem(monitor, path).Result;
+                        }
+                        catch (Exception ex) {
+                            monitor.ReportError ("Failed to cache solution", ex);
+                            throw;
+                        }
+                        finally {
+                            monitor.EndTask ();
+                        }
                     }
                 }
-            }
+            });
 	    }
 
 	    public void SetActiveConfiguration (string configuration)
@@ -385,33 +387,35 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
         public ItemCollection<ProtobuildSubmodule> Submodules { get; set; }
 
-	    public Project GetShadowProject (ProtobuildDefinition protobuildDefinition, IProgressMonitor monitor,
+        SolutionFolder IProtobuildModule.RootFolder {
+            get
+            {
+                return this.RootFolder;
+            }
+
+            set
+            {
+                // TODO
+            }
+        }
+
+        public async Task<Project> GetShadowProject (ProtobuildDefinition protobuildDefinition, ProgressMonitor monitor,
 	        ConfigurationSelector configuration)
 	    {
             var platform = configuration.GetConfiguration(this).Id;
-            EnsureProjectsAreGeneratedForPlatform(platform, monitor);
+            await EnsureProjectsAreGeneratedForPlatform(platform, monitor);
 
             var solution = shadowSolutions[platform];
             return (Project)solution.Items.OfType<Project>().FirstOrDefault(x => x.BaseDirectory == protobuildDefinition.ProjectDirectory);
 	    }
 
-	    public override ReadOnlyCollection<T> GetAllSolutionItems<T> ()
+        protected override IEnumerable<WorkspaceObject> OnGetChildren()
 	    {
-	        var collection = new List<T> ();
+            var collection = new List<WorkspaceObject> ();
 
-	        if (typeof (T).IsAssignableFrom (typeof (ProtobuildDefinition))) {
-	            collection.AddRange (GetAllDefinitions().Cast<T> ());
-            }
-
-            if (typeof(T).IsAssignableFrom(typeof(ProtobuildPackage)))
-            {
-                collection.AddRange(GetAllPackages().Cast<T>());
-            }
-
-            if (typeof(T).IsAssignableFrom(typeof(ProtobuildSubmodule)))
-            {
-                collection.AddRange(GetAllSubmodules().Cast<T>());
-            }
+            collection.AddRange(GetAllDefinitions());
+            //collection.AddRange(GetAllPackages().Cast<WorkspaceObject>());
+            //collection.AddRange(GetAllSubmodules().Cast<WorkspaceObject>());
 
 	        return collection.AsReadOnly ();
 	    }

@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Protobuild
 {
 	interface INewProtobuildModuleDialogBackend
@@ -36,3 +38,4 @@ namespace MonoDevelop.Protobuild
 	}
 }
 
+#endif

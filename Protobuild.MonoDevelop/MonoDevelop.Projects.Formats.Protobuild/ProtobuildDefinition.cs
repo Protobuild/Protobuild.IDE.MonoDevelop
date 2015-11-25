@@ -22,6 +22,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             module = modulel;
             definition = definitionl;
 
+            Initialize(this);
+
             Configurations.Clear ();
 
 			var document = new XmlDocument ();
@@ -38,7 +40,11 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 					ImportStandardProject(document, moduleObj);
                     break;
             }
+
+            base.Name = definition.Name;
         }
+
+
 
 		#region Standard projects
 
@@ -135,11 +141,15 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             return reference;
         }
 
+        #if MONODEVELOP_5
+
 		public override string[] SupportedLanguages {
 			get {
 				return new[] { "C#", string.Empty };
 			}
 		}
+
+        #endif
 
         private ProjectFile ImportFile (XmlElement child)
         {
@@ -393,46 +403,49 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 		#endregion
 
-		protected override void OnSave (IProgressMonitor monitor)
+		protected override Task OnSave (ProgressMonitor monitor)
 		{
-			var document = new XmlDocument ();
-			document.Load(definition.DefinitionPath);
+            return Task.Run(() =>
+            {
+    			var document = new XmlDocument ();
+    			document.Load(definition.DefinitionPath);
 
-			switch (definition.Type) {
-			case "External":
-				ExportExternalProject(document);
-				break;
-			case "Content":
-				ExportContentProject(document);
-				break;
-			default:
-				ExportStandardProject(document);
-				break;
-			}
+    			switch (definition.Type) {
+    			case "External":
+    				ExportExternalProject(document);
+    				break;
+    			case "Content":
+    				ExportContentProject(document);
+    				break;
+    			default:
+    				ExportStandardProject(document);
+    				break;
+    			}
 
-			var settings = new XmlWriterSettings
-			{
-				Indent = true,
-				IndentChars = "  ",
-				NewLineChars = "\n",
-				Encoding = Encoding.UTF8
-			};
-			using (var memory = new MemoryStream())
-			{
-				using (var writer = XmlWriter.Create(memory, settings))
-				{
-					document.Save(writer);
-				}
-				memory.Seek(0, SeekOrigin.Begin);
-				var reader = new StreamReader(memory);
-				var content = reader.ReadToEnd().Trim() + Environment.NewLine;
-				using (var writer = new StreamWriter(definition.DefinitionPath, false, Encoding.UTF8))
-				{
-					writer.Write(content);
-				}
-			}
+    			var settings = new XmlWriterSettings
+    			{
+    				Indent = true,
+    				IndentChars = "  ",
+    				NewLineChars = "\n",
+    				Encoding = Encoding.UTF8
+    			};
+    			using (var memory = new MemoryStream())
+    			{
+    				using (var writer = XmlWriter.Create(memory, settings))
+    				{
+    					document.Save(writer);
+    				}
+    				memory.Seek(0, SeekOrigin.Begin);
+    				var reader = new StreamReader(memory);
+    				var content = reader.ReadToEnd().Trim() + Environment.NewLine;
+    				using (var writer = new StreamWriter(definition.DefinitionPath, false, Encoding.UTF8))
+    				{
+    					writer.Write(content);
+    				}
+    			}
 
-			((ProtobuildModule)ParentSolution).DefinitionOrModuleSaved();
+    			((ProtobuildModule)ParentSolution).DefinitionOrModuleSaved();
+            });
 		}
 
         public override FilePath FileName
@@ -441,10 +454,13 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             set { definition.DefinitionPath = value; /* TODO Sync */ }
         }
 
-        public override string Name
+        protected override void OnSetName (string value)
         {
-            get { return definition.Name; }
-            set { definition.Name = value; /* TODO Sync */ }
+            base.OnSetName (value);
+
+            definition.Name = value;
+
+            // TODO: Sync
         }
 
 		public string Type
@@ -466,7 +482,25 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             }
         }
 
-        protected override void OnClean (IProgressMonitor monitor, ConfigurationSelector configuration)
+        public override Task<TargetEvaluationResult> OnRunTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
+        {
+            var module = (ProtobuildModule)ParentSolution;
+            return RunDefinitionTarget(module, monitor, target, configuration, context);
+        }
+
+        private async Task<TargetEvaluationResult> RunDefinitionTarget(ProtobuildModule module, ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
+        {
+            var project = await module.GetShadowProject(this, monitor, configuration);
+            var value = await project.OnRunTarget(monitor, target, configuration, context);
+            if (target == ProjectService.BuildTarget) {
+                module.OnDefinitionBuilt(this);
+            }
+            return value;
+        }
+
+        #if MONODEVELOP_5
+
+        protected override void OnClean (ProgressMonitor monitor, ConfigurationSelector configuration)
         {
         }
 
@@ -490,6 +524,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             var project = module.GetShadowProject(this, monitor, configuration);
             project.Execute(monitor, context, configuration);
         }
+
+        #endif
 
         protected override bool OnGetCanExecute (ExecutionContext context, ConfigurationSelector configuration)
         {

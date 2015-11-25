@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
-    public class ProtobuildSubmodule : IProtobuildModule
+    public class ProtobuildSubmodule : WorkspaceObject, IProtobuildModule
     {
         private ProtobuildModuleInfo parentModule;
 
@@ -54,5 +54,20 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				return this.SupportedPlatformsString.Split (',');
 			}
 		}
+
+        protected override string OnGetName ()
+        {
+            throw new NotImplementedException ();
+        }
+
+        protected override string OnGetItemDirectory ()
+        {
+            throw new NotImplementedException ();
+        }
+
+        protected override string OnGetBaseDirectory ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 }

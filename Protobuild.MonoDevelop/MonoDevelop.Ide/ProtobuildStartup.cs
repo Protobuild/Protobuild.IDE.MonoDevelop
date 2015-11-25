@@ -53,14 +53,14 @@ namespace MonoDevelop.Ide
             {
                 foreach (var module in IdeApp.Workspace.GetAllSolutions().OfType<ProtobuildModule>()) {
                     var module1 = module;
-                    DispatchService.BackgroundDispatch(() => {
+                    /*DispatchService.BackgroundDispatch(() => {
                         var message = "Starting generation of .NET projects for " +
                                       IdeApp.Workspace.ActiveConfigurationId + "...";
-                        using (var statusMonitor = IdeApp.Workbench.ProgressMonitors.GetBuildProgressMonitor(message)) {
-                            module1.Generate (statusMonitor, IdeApp.Workspace.ActiveConfiguration);
+                        using (var statusMonitor = IdeApp.Workbench.ProgressMonitors.GetBuildProgressMonitor(message)) {*/
+                    module1.Generate (new ProgressMonitor(), IdeApp.Workspace.ActiveConfiguration);
                             module1.SetActiveConfiguration (IdeApp.Workspace.ActiveConfigurationId);
-                        }
-                    });
+                        //}
+                    //});
                 }
             };
         }
@@ -79,10 +79,10 @@ namespace MonoDevelop.Ide
 
         private void OnModuleOnShadowSolutionChanged (object o, SolutionItemEventArgs eventArgs)
         {
-            TypeSystemService.UnloadAllProjects ();
+            /*TypeSystemService.UnloadAllProjects ();
             foreach (var project in eventArgs.Solution.GetAllSolutionItems<ProtobuildDefinition> ()) {
                 TypeSystemService.LoadProject (project);
-            }
+            }*/
 
             // Active documents automatically change over because the type system reloads.
         }
@@ -97,7 +97,7 @@ namespace MonoDevelop.Ide
 					DispatchService.BackgroundDispatch(() => {
 						var message = "Starting generation of .NET projects for " +
 							IdeApp.Workspace.ActiveConfigurationId + "...";
-						using (var statusMonitor = IdeApp.Workbench.ProgressMonitors.GetBuildProgressMonitor(message)) {
+                        using (var statusMonitor = new ProgressMonitor()) {//IdeApp.Workbench.ProgressMonitors.GetBuildProgressMonitor(message)) {
 							module1.ClearShadowSolutions();
 							module1.Generate (statusMonitor, IdeApp.Workspace.ActiveConfiguration);
 							module1.SetActiveConfiguration (IdeApp.Workspace.ActiveConfigurationId);

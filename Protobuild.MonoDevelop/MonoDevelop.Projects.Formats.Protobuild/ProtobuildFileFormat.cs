@@ -29,9 +29,11 @@ using MonoDevelop.Core;
 using System.Collections.Generic;
 using MonoDevelop.Core.Assemblies;
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
-	public class ProtobuildFileFormat : IFileFormat
+	public class ProtobuildFileFormat : FileFormat
     {
 		public FilePath GetValidFormatName (object obj, FilePath fileName)
 		{
@@ -126,3 +128,4 @@ namespace MonoDevelop.Projects.Formats.Protobuild
     }
 }
 
+#endif

@@ -5,27 +5,27 @@ namespace MonoDevelop.Protobuild
 	public partial class GtkProtobuildModuleCreationWidget
 	{
 		private global::Gtk.HBox mainHBox;
-		
+
 		private global::Gtk.EventBox leftBorderEventBox;
-		
+
 		private global::Gtk.EventBox projectConfigurationTableEventBox;
-		
+
 		private global::Gtk.VBox projectConfigurationVBox;
-		
+
 		private global::Gtk.EventBox eventbox1;
-		
+
 		private global::Gtk.ProgressBar progressbar1;
-		
+
 		private global::Gtk.VBox vbox2;
-		
+
 		private global::Gtk.ScrolledWindow GtkScrolledWindow1;
-		
+
 		private global::Gtk.TextView protobuildOutputTextArea;
-		
+
 		private global::Gtk.EventBox projectConfigurationBottomEventBox;
-		
+
 		private global::Gtk.EventBox eventbox2;
-		
+
 		private global::Gtk.EventBox projectConfigurationRightBorderEventBox;
 
 		protected virtual void Build ()

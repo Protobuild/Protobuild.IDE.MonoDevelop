@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Extensions;
 
+#if FALSE
+
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
     public class ProtobuildDefinitionHandler : ISolutionItemHandler
@@ -56,3 +58,5 @@ namespace MonoDevelop.Projects.Formats.Protobuild
         }
     }
 }
+
+#endif

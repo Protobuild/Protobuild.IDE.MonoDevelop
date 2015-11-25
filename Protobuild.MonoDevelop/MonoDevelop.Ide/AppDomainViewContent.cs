@@ -149,20 +149,20 @@ namespace MonoDevelop.Ide
 			}
 		}
 
-		public override void Load (string fileName)
+        public override void Load (FileOpenInformation fileName)
 		{
 		    if (openFile.Behaviour != null) {
-		        openFile.Behaviour.Load (fileName);
+                openFile.Behaviour.Load (fileName.FileName);
 		    }
-		    ContentName = fileName;
+            ContentName = fileName.FileName;
 		}
 
-		public override void Save (string fileName)
+        public override void Save (FileSaveInformation fileName)
         {
 		    if (openFile.Behaviour != null) {
-		        openFile.Behaviour.Save (fileName);
+                openFile.Behaviour.Save (fileName.FileName);
 		    }
-		    ContentName = fileName;
+            ContentName = fileName.FileName;
 		}
 
 		public bool IsSuspended { get; set; }

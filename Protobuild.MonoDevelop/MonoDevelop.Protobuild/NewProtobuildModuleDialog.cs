@@ -17,6 +17,8 @@ using System.ComponentModel;
 using MonoDevelop.Ide.Projects;
 using MonoDevelop.Ide;
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Protobuild
 {
     class NewProtobuildModuleDialog : INewProtobuildModuleDialogController
@@ -776,3 +778,4 @@ namespace MonoDevelop.Protobuild
 	}
 }
 
+#endif

@@ -36,8 +36,6 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 		public string Type { get; set; }
 
-		public Guid Guid { get; set; }
-
 		public string DefinitionPath { get; set; }
 
 		public string ModulePath { get; set; }

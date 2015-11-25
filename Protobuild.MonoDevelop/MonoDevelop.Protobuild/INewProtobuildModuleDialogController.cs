@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using MonoDevelop.Ide.Templates;
 using Xwt.Drawing;
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Protobuild
 {
     interface INewProtobuildModuleDialogController
@@ -63,4 +65,6 @@ namespace MonoDevelop.Protobuild
         void SearchRequested (string text);
 	}
 }
+
+#endif
 

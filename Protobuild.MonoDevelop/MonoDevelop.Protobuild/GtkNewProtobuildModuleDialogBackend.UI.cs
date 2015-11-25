@@ -32,6 +32,8 @@ using MonoDevelop.Ide.Templates;
 using MonoDevelop.Ide.Projects;
 using MonoDevelop.Ide;
 
+#if MONODEVELOP_5
+
 namespace MonoDevelop.Protobuild
 {
     partial class GtkNewProtobuildModuleDialogBackend : Gtk.Dialog
@@ -324,3 +326,4 @@ namespace MonoDevelop.Protobuild
 	}
 }
 
+#endif

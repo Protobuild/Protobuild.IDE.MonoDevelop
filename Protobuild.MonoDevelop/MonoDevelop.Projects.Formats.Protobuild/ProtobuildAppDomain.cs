@@ -69,11 +69,29 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 		void LoadAppDomain ()
 		{
+            var extensionPath = new FileInfo(typeof(ProtobuildDomainBehaviour).Assembly.Location).DirectoryName;
+            var commonPath = string.Empty;
+            for (var i = 0; i < AppDomain.CurrentDomain.BaseDirectory.Length; i++)
+            {
+                if (i >= extensionPath.Length)
+                {
+                    break;
+                }
+
+                if (AppDomain.CurrentDomain.BaseDirectory[i] == extensionPath[i])
+                {
+                    commonPath += extensionPath[i];
+                }
+            }
+
+            var relToBaseApp = AppDomain.CurrentDomain.BaseDirectory.Substring(commonPath.Length);
+            var relToExtensionPath = extensionPath.Substring(commonPath.Length);
+
 			appDomain = AppDomain.CreateDomain(
 				"Protobuild Executable", 
 				null,
-				AppDomain.CurrentDomain.BaseDirectory,
-				AppDomain.CurrentDomain.RelativeSearchPath,
+                commonPath,
+                relToBaseApp + Path.PathSeparator + relToExtensionPath,
 				true);
 
 			// Modern versions of Protobuild pack their internal behaviour into
@@ -101,13 +119,13 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			appDomain = null;
 		}
 
-		public ProtobuildModuleInfo LoadModule(IProgressMonitor monitor)
+        public ProtobuildModuleInfo LoadModule(ProgressMonitor monitor)
 		{
 			var rootPath = new FileInfo(protobuildPath).DirectoryName;
-			return domainBehaviour.LoadModule(rootPath, new MarshalledProgressMonitor(monitor));
+            return domainBehaviour.LoadModule(rootPath);
 		}
 
-		public void RunExecutableWithArguments(ProtobuildModuleInfo module, string args, IProgressMonitor monitor)
+		public void RunExecutableWithArguments(ProtobuildModuleInfo module, string args)
 		{
 			var protobuildPath = System.IO.Path.Combine(module.Path, "Protobuild.exe");
 
@@ -145,14 +163,14 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				{
 					if (!string.IsNullOrEmpty(eventArgs.Data))
 					{
-						monitor.Log.WriteLine(eventArgs.Data);
+						//monitor.Log.WriteLine(eventArgs.Data);
 					}
 				};
 				p.ErrorDataReceived += (sender, eventArgs) =>
 				{
 					if (!string.IsNullOrEmpty(eventArgs.Data))
 					{
-						monitor.Log.WriteLine(eventArgs.Data);
+						//monitor.Log.WriteLine(eventArgs.Data);
 					}
 				};
 				p.Start();
@@ -161,16 +179,16 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				p.WaitForExit();
 
 				if (p.ExitCode == 0) {
-					monitor.ReportSuccess("Protobuild.exe " + args + " completed with exit code 0.");
+					//monitor.ReportSuccess("Protobuild.exe " + args + " completed with exit code 0.");
 				} else {
-					monitor.ReportError("Protobuild.exe " + args + " failed with non-zero exit code.", null);
+					//monitor.ReportError("Protobuild.exe " + args + " failed with non-zero exit code.", null);
 				}
 			}
         }
 
-        public void SaveModule(ProtobuildModuleInfo latestModuleInfo, IProgressMonitor monitor)
+        public void SaveModule(ProtobuildModuleInfo latestModuleInfo)
         {
-            domainBehaviour.SaveModule(latestModuleInfo, monitor);
+            domainBehaviour.SaveModule(latestModuleInfo);
         }
 
 		public class ProtobuildDomainBehaviour : MarshalByRefObject
@@ -213,15 +231,15 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				internalAssembly = Assembly.Load(bytes);
 			}
 
-			public ProtobuildModuleInfo LoadModule(string rootPath, IProgressMonitor monitor) 
+            public ProtobuildModuleInfo LoadModule(string rootPath) 
 			{
 				var moduleInfoType = internalAssembly.GetType("Protobuild.ModuleInfo");
 				var moduleInfoLoad = moduleInfoType.GetMethod("Load");
 				dynamic moduleRef = moduleInfoLoad.Invoke(null, new object[] { Path.Combine(rootPath, "Build", "Module.xml") });
 
-			    if (monitor != null) {
+			    /*if (monitor != null) {
 			        monitor.BeginStepTask ("Loading " + moduleRef.Name + "...", 1, 5);
-			    }
+			    }*/
 
 			    var moduleInfo = new ProtobuildModuleInfo();
                 moduleInfo.Name = moduleRef.Name;
@@ -250,7 +268,6 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 						definitionInfo.Path = definition.Path;
 					}
 			        definitionInfo.Type = definition.Type;
-			        definitionInfo.Guid = definition.Guid;
 			        definitionInfo.DefinitionPath = definition.DefinitionPath;
 			        definitionInfo.ModulePath = definition.ModulePath;
 			        definitionInfo.SkipAutopackage = definition.SkipAutopackage;
@@ -271,7 +288,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			    moduleInfo.LoadedSubmodules = new List<ProtobuildModuleInfo> ();
 
 			    foreach (var submodule in moduleRef.GetSubmodules ()) {
-			        moduleInfo.LoadedSubmodules.Add (LoadModule (submodule.Path, null));
+			        moduleInfo.LoadedSubmodules.Add (LoadModule (submodule.Path));
 			    }
 
 				return moduleInfo;
@@ -285,7 +302,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 		        return platform;
 		    }
 
-            public void SaveModule(ProtobuildModuleInfo moduleInfo, IProgressMonitor monitor)
+            public void SaveModule(ProtobuildModuleInfo moduleInfo)
             {
                 var moduleInfoType = internalAssembly.GetType("Protobuild.ModuleInfo");
                 var moduleInfoLoad = moduleInfoType.GetMethod("Load");

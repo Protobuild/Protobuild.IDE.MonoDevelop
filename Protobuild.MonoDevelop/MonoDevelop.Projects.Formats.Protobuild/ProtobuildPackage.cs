@@ -1,8 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
-    public class ProtobuildPackage : IProtobuildModule
+    public class ProtobuildPackage : WorkspaceObject, IProtobuildModule
     {
         private ProtobuildModuleInfo module;
 
@@ -46,5 +47,20 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 		public SolutionFolder RootFolder { get { return parentModuleRef.RootFolder; } set { parentModuleRef.RootFolder = value; } }
 
 		public string[] SupportedPlatformsArray { get { return parentModuleRef.SupportedPlatformsArray; } }
+
+        protected override string OnGetName ()
+        {
+            throw new NotImplementedException ();
+        }
+
+        protected override string OnGetItemDirectory ()
+        {
+            throw new NotImplementedException ();
+        }
+
+        protected override string OnGetBaseDirectory ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 }

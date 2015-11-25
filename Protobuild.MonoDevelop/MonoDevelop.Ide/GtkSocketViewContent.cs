@@ -77,16 +77,16 @@ namespace MonoDevelop.Ide
 			}
 		}
 
-		public override void Load (string fileName)
+        public override void Load (FileOpenInformation fileName)
 		{
-			openFile.NetworkRequestLayer.Load(fileName);
-			ContentName = fileName;
+            openFile.NetworkRequestLayer.Load(fileName.FileName);
+            ContentName = fileName.FileName;
 		}
 
-		public override void Save (string fileName)
+        public override void Save (FileSaveInformation fileName)
 		{
-			openFile.NetworkRequestLayer.Save(fileName);
-			ContentName = fileName;
+            openFile.NetworkRequestLayer.Save(fileName.FileName);
+            ContentName = fileName.FileName;
 		}
 
 		public bool IsSuspended { get; set; }
