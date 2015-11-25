@@ -116,6 +116,8 @@ namespace MonoDevelop.Ide
 			base.Dispose ();
 		}
 
+		#if MONODEVELOP_6_PENDING
+
 		public override void Suspend ()
 		{
 			openFile.SuspendedState = openFile.NetworkRequestLayer.Suspend();
@@ -181,6 +183,8 @@ namespace MonoDevelop.Ide
 
 			base.Resume ();
 		}
+
+		#endif
 
 		void OnParentChanged (object o, Gtk.ParentSetArgs args)
 		{

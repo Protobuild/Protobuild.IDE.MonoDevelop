@@ -105,14 +105,18 @@ namespace MonoDevelop.Ide
 
         protected override void SuspendEditor(ProtobuildDefinition definition, GtkPlugOpenedFile openedFile)
 	    {
+			#if MONODEVELOP_6_PENDING
             Console.WriteLine("Suspending editor for " + openedFile.FileReference + " in " + definition.Name);
             openedFile.ViewContent.Suspend();
+			#endif
 	    }
 
 	    protected override void ResumeEditor (ProtobuildDefinition definition, GtkPlugOpenedFile openedFile)
 	    {
+			#if MONODEVELOP_6_PENDING
             Console.WriteLine("Resuming editor for " + openedFile.FileReference + " in " + definition.Name);
             openedFile.ViewContent.Resume();
+			#endif
 	    }
 
 	    protected override void StopInfo (ProtobuildDefinition definition)

@@ -101,7 +101,9 @@ namespace MonoDevelop.Ide
 	        if (area.GdkWindow == null) {
                 if (!IsSuspended)
                 {
+					#if MONODEVELOP_6_PENDING
 	                this.Suspend();
+					#endif
 	            }
 	            return true;
 	        }
@@ -126,7 +128,9 @@ namespace MonoDevelop.Ide
                 }
                 if (this.IsSuspended)
                 {
+					#if MONODEVELOP_6_PENDING
                     this.Resume ();
+					#endif
                 }
                 else if (!didInit) {
                     openFile.Behaviour.Resume (ptr, openFile.SuspendedState);
@@ -178,6 +182,8 @@ namespace MonoDevelop.Ide
 			base.Dispose ();
 		}
 
+		#if MONODEVELOP_6_PENDING
+
 		public override void Suspend ()
         {
             openFile.SuspendedState = openFile.Behaviour.Suspend();
@@ -201,6 +207,8 @@ namespace MonoDevelop.Ide
 			
 			base.Resume ();
 		}
+
+		#endif
 	}
 }
 

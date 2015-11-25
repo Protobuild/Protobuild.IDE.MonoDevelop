@@ -52,6 +52,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	    public ProtobuildModule ()
 	    {
             shadowSolutions = new Dictionary<string, Solution> ();
+			Initialize(this);
         }
 
         public string ActiveConfiguration { get; set; }
@@ -89,13 +90,16 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	    {
 			if (appDomain != null)
 			{
-                //monitor.BeginStepTask ("Stopping Protobuild...", 1, 1);
+                monitor.BeginTask ("Stopping Protobuild...", 1, 1);
+				monitor.BeginStep();
 				appDomain.UnloadAppDomain();
 				appDomain.ProtobuildChangedEvent -= HandleProtobuildChangedEvent;
 				appDomain = null;
+				monitor.EndTask();
 			}
 
-            //monitor.BeginStepTask("Starting Protobuild...", 1, 1);
+            monitor.BeginTask("Starting Protobuild...", 1, 1);
+			monitor.BeginStep();
 			appDomain = new ProtobuildAppDomain(path);
 			appDomain.ProtobuildChangedEvent += HandleProtobuildChangedEvent;
             latestModuleInfo = appDomain.LoadModule(monitor);
@@ -110,12 +114,15 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
             //monitor.BeginStepTask("Loading projects...", 1, 1);
 		    ReloadProjects ();
+
+			monitor.EndTask();
 		}
 
         public void SaveModule(FilePath file, ProgressMonitor monitor)
         {
             try {
                 monitor.BeginTask ("Saving module " + latestModuleInfo.Name + "...", 1);
+				monitor.BeginStep();
 
                 if (this.SingleStartup) {
                     latestModuleInfo.DefaultStartupProject = this.StartupItem.Name;
@@ -242,7 +249,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             foreach (var definition in moduleInfo.LoadedDefinitions)
             {
                 var definitionItem = new ProtobuildDefinition(moduleInfo, definition, folder);
-                definitionItem.ParentSolution = this;
+                //definitionItem.ParentSolution = this;
                 //definitionItem.SetItemHandler(new MSBuildHandler(definition.Guid.ToString(), definition.Guid.ToString()));
                 folder.Definitions.Add(definitionItem);
 

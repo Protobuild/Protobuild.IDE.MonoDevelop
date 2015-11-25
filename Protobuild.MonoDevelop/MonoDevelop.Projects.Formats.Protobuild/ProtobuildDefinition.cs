@@ -482,7 +482,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             }
         }
 
-        public override Task<TargetEvaluationResult> OnRunTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
+		protected override Task<TargetEvaluationResult> OnRunTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
         {
             var module = (ProtobuildModule)ParentSolution;
             return RunDefinitionTarget(module, monitor, target, configuration, context);
@@ -491,7 +491,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
         private async Task<TargetEvaluationResult> RunDefinitionTarget(ProtobuildModule module, ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
         {
             var project = await module.GetShadowProject(this, monitor, configuration);
-            var value = await project.OnRunTarget(monitor, target, configuration, context);
+            var value = await project.RunTarget(monitor, target, configuration, context);
             if (target == ProjectService.BuildTarget) {
                 module.OnDefinitionBuilt(this);
             }
@@ -535,6 +535,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             return definition.Type != "Library" && definition.Type != "External" && definition.Type != "Content";
         }
 
+		#if MONODEVELOP_6_PENDING
+
         public override Project GetProjectForTypeSystem ()
         {
             var module = (ProtobuildModule)ParentSolution;
@@ -546,5 +548,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             }
             return project;
         }
+
+		#endif
     }
 }
