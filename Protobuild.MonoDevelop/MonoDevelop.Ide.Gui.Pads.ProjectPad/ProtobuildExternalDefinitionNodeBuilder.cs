@@ -16,14 +16,14 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
 		public override string GetNodeName (ITreeNavigator thisNode, object dataObject)
 		{
-			return ((ProtobuildDefinition)dataObject).Name;
+			return ((ProtobuildExternalDefinition)dataObject).Name;
 		}
 
 		public override void BuildNode (ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
 		{
 			base.BuildNode (treeBuilder, dataObject, nodeInfo);
 
-			var p = dataObject as ProtobuildDefinition;
+			var p = dataObject as ProtobuildExternalDefinition;
 
 			string escapedProjectName = GLib.Markup.EscapeText (p.Name);
 
@@ -33,7 +33,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
 		public override void BuildChildNodes(ITreeBuilder builder, object dataObject)
 		{
-			var definition = (ProtobuildDefinition)dataObject;
+			var definition = (ProtobuildExternalDefinition)dataObject;
 
 			if (definition.References != null) {
 				builder.AddChild (definition.References);

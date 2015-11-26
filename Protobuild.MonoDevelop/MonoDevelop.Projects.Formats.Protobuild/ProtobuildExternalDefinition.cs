@@ -11,7 +11,7 @@ using MonoDevelop.Projects.Formats.MSBuild;
 
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
-	public class ProtobuildExternalDefinition : ProtobuildDefinition
+	public class ProtobuildExternalDefinition : ProtobuildNonStandardDefinition
 	{
 		internal ProtobuildExternalDefinition (ProtobuildModuleInfo modulel, ProtobuildDefinitionInfo definitionl, XmlDocument document, IProtobuildModule moduleObj)
 			: base(modulel, definitionl, document, moduleObj) {

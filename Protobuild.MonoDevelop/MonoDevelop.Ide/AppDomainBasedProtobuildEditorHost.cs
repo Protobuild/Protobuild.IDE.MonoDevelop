@@ -55,7 +55,7 @@ namespace MonoDevelop.Ide
             DisplayBindingService.RegisterRuntimeDisplayBinding(binding);
         }
 
-	    protected override AppDomainOpenedFileList StartInfo (ProtobuildDefinition definition, string outputPath)
+		protected override AppDomainOpenedFileList StartInfo (ProtobuildStandardDefinition definition, string outputPath)
         {
             var openedFileList = new AppDomainOpenedFileList();
             openedFileList.Definition = definition;
@@ -70,7 +70,7 @@ namespace MonoDevelop.Ide
                    !openedFile.ViewContent.IsSuspended;
 	    }
 
-	    protected override void SuspendEditor (ProtobuildDefinition definition, AppDomainOpenedFile openedFile)
+		protected override void SuspendEditor (ProtobuildStandardDefinition definition, AppDomainOpenedFile openedFile)
         {
 			#if MONODEVELOP_6_PENDING
             Console.WriteLine("Suspending editor for " + openedFile.FileReference + " in " + definition.Name);
@@ -78,7 +78,7 @@ namespace MonoDevelop.Ide
 			#endif
 	    }
 
-	    protected override void ResumeEditor (ProtobuildDefinition definition, AppDomainOpenedFile openedFile)
+		protected override void ResumeEditor (ProtobuildStandardDefinition definition, AppDomainOpenedFile openedFile)
 		{
 			#if MONODEVELOP_6_PENDING
             Console.WriteLine("Resuming editor for " + openedFile.FileReference + " in " + definition.Name);
@@ -86,7 +86,7 @@ namespace MonoDevelop.Ide
 			#endif
 	    }
 
-	    protected override void StopInfo (ProtobuildDefinition definition)
+		protected override void StopInfo (ProtobuildStandardDefinition definition)
 	    {
 	        openedFiles[definition].InfoBehaviour = null;
 	        if (openedFiles[definition].InfoAppDomain != null) {
@@ -104,7 +104,7 @@ namespace MonoDevelop.Ide
 	        openedFile.AppDomain = null;
         }*/
 
-	    protected override void InitializeDefinitionAndRegisterBindings (ProtobuildDefinition definition, AppDomainOpenedFileList targetList)
+		protected override void InitializeDefinitionAndRegisterBindings (ProtobuildStandardDefinition definition, AppDomainOpenedFileList targetList)
         {
             AppDomain appDomain;
             ProtobuildIDEEditorDomainBehaviour domainBehaviour;

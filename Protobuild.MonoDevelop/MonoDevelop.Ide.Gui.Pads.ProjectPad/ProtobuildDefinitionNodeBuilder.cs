@@ -11,7 +11,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 	{
 		public override bool CanBuildNode (Type dataType)
 		{
-			return typeof(ProtobuildDefinition).IsAssignableFrom(dataType);
+			return typeof(IProtobuildDefinition).IsAssignableFrom(dataType);
 		}
 
 		protected override void Initialize ()
@@ -30,7 +30,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
 		void IdeAppWorkspaceActiveConfigurationChanged (object sender, EventArgs e)
 		{
-			foreach (var p in IdeApp.Workspace.GetAllProjects ().OfType<ProtobuildDefinition>()) {
+			foreach (var p in IdeApp.Workspace.GetAllProjects ().OfType<IProtobuildDefinition>()) {
 				ITreeBuilder tb = Context.GetTreeBuilder (p);
 				if (tb != null)
 					tb.UpdateAll ();
@@ -39,7 +39,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
 		public override void BuildChildNodes(ITreeBuilder builder, object dataObject)
 		{
-			var definition = (ProtobuildDefinition)dataObject;
+			var definition = (IProtobuildDefinition)dataObject;
 
 			if (definition.References != null) {
 				builder.AddChild (definition.References);
@@ -53,26 +53,6 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 			if (definition.Services != null)
 			{
 				builder.AddChild(definition.Services);
-			}
-
-			foreach (var contentRule in definition.Items.OfType<ProtobuildContentSourceRule>())
-			{
-				builder.AddChild(contentRule);
-			}
-
-			foreach (var platformFilter in definition.Items.OfType<ProtobuildPlatformFilter>())
-			{
-				builder.AddChild(platformFilter);
-			}
-
-			foreach (var serviceFilter in definition.Items.OfType<ProtobuildServiceFilter>())
-			{
-				builder.AddChild(serviceFilter);
-			}
-
-			foreach (var externalRef in definition.Items.OfType<ProtobuildExternalRef>())
-			{
-				builder.AddChild(externalRef);
 			}
 
 			base.BuildChildNodes(builder, dataObject);

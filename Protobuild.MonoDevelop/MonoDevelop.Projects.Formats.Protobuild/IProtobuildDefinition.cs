@@ -1,10 +1,6 @@
-﻿//
-// OpenedFileList.cs
+﻿// IProtobuildDefinition.cs
 //
-// Author:
-//       James Rhodes <jrhodes@redpointsoftware.com.au>
-//
-// Copyright (c) 2015 James Rhodes
+// Copyright (c) 2015 June Rhodes
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoDevelop.Projects.Formats.Protobuild;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using MonoDevelop.Core;
 
-namespace MonoDevelop.Ide
+namespace MonoDevelop.Projects.Formats.Protobuild
 {
-	public class AppDomainOpenedFileList : IOpenedFileList<AppDomainOpenedFile>
+	public interface IProtobuildDefinition
 	{
-		public ProtobuildStandardDefinition Definition { get; set; }
+		ProtobuildReferences References { get; set; }
 
-		public AppDomain InfoAppDomain { get; set; }
+		ProtobuildDependencies Dependencies { get; set; }
 
-        public ProtobuildIDEEditorDomainBehaviour InfoBehaviour { get; set; }
+		ProtobuildServices Services { get; set; }
 
-		public List<AppDomainOpenedFile> OpenedFiles { get; set; }
+		ProjectItemCollection Items { get; }
 
-	    public string LibraryPath { get; set; }
+		Task OnSave (ProgressMonitor monitor);
 	}
-
-
 }
 

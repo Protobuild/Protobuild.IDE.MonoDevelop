@@ -20,13 +20,13 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             currentModule = submodule;
 			RootFolder = rootFolder;
 			Packages = new ProtobuildPackages(this);
-			Definitions = new ItemCollection<ProtobuildDefinition>();
+			Definitions = new ItemCollection<IProtobuildDefinition>();
 			Submodules = new ItemCollection<ProtobuildSubmodule>();
 		}
 
         public ProtobuildPackages Packages { get; set; }
 
-        public ItemCollection<ProtobuildDefinition> Definitions { get; set; }
+        public ItemCollection<IProtobuildDefinition> Definitions { get; set; }
 
         public ItemCollection<ProtobuildSubmodule> Submodules { get; set; }
 

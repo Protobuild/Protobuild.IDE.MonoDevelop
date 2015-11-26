@@ -164,6 +164,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 					if (!string.IsNullOrEmpty(eventArgs.Data))
 					{
 						lineOutputted(eventArgs.Data);
+						Console.WriteLine(eventArgs.Data);
 						//monitor.Log.WriteLine(eventArgs.Data);
 					}
 				};
@@ -172,13 +173,16 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 					if (!string.IsNullOrEmpty(eventArgs.Data))
 					{
 						lineOutputted(eventArgs.Data);
+						Console.Error.WriteLine(eventArgs.Data);
 						//monitor.Log.WriteLine(eventArgs.Data);
 					}
 				};
 				p.Start();
 				p.BeginOutputReadLine();
 				p.BeginErrorReadLine();
+				Console.WriteLine("(Started Protobuild)");
 				p.WaitForExit();
+				Console.WriteLine("(Protobuild Exited)");
 
 				if (p.ExitCode == 0) {
 					lineOutputted("Protobuild.exe " + args + " completed with exit code 0.");

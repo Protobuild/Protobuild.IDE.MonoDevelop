@@ -13,6 +13,10 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 			nodeInfo.Icon = Context.GetIcon (Stock.Solution);
 		}
 
+		public override string GetNodeName (ITreeNavigator thisNode, object dataObject) {
+			return ((IProtobuildModule)dataObject).Name;
+		}
+
         public override void BuildChildNodes (ITreeBuilder treeBuilder, object dataObject)
         {
             var module = (IProtobuildModule)dataObject;

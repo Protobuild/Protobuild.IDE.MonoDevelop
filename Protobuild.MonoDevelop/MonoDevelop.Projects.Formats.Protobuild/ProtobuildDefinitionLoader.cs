@@ -1,10 +1,6 @@
-﻿//
-// OpenedFileList.cs
+﻿// ProtobuildDefinitionLoader.cs
 //
-// Author:
-//       James Rhodes <jrhodes@redpointsoftware.com.au>
-//
-// Copyright (c) 2015 James Rhodes
+// Copyright (c) 2015 June Rhodes
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoDevelop.Projects.Formats.Protobuild;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Collections.Generic;
+using System.Xml;
 
-namespace MonoDevelop.Ide
+namespace MonoDevelop.Projects.Formats.Protobuild
 {
-	public class AppDomainOpenedFileList : IOpenedFileList<AppDomainOpenedFile>
+	public static class ProtobuildDefinitionLoader
 	{
-		public ProtobuildStandardDefinition Definition { get; set; }
+		public static IProtobuildDefinition CreateDefinition(ProtobuildModuleInfo modulel, ProtobuildDefinitionInfo definitionl, IProtobuildModule moduleObj)
+		{
+			var document = new XmlDocument ();
+			document.Load(definitionl.DefinitionPath);
 
-		public AppDomain InfoAppDomain { get; set; }
-
-        public ProtobuildIDEEditorDomainBehaviour InfoBehaviour { get; set; }
-
-		public List<AppDomainOpenedFile> OpenedFiles { get; set; }
-
-	    public string LibraryPath { get; set; }
+			switch (definitionl.Type) {
+			case "External":
+				return new ProtobuildExternalDefinition(modulel, definitionl, document, moduleObj);
+			case "Content":
+				return new ProtobuildContentDefinition(modulel, definitionl, document, moduleObj);
+			default:
+				return new ProtobuildStandardDefinition(modulel, definitionl, document, moduleObj);
+			}
+		}
 	}
-
-
 }
 

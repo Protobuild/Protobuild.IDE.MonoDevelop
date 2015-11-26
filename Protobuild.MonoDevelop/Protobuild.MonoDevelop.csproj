@@ -108,7 +108,6 @@
     <Compile Include="MonoDevelop.Projects.Formats.Protobuild\MarshalledProgressMonitor.cs" />
     <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildAppDomain.cs" />
     <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildContentSourceRule.cs" />
-    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinition.cs" />
     <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinitionHandler.cs" />
     <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinitionInfo.cs" />
     <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDependencies.cs" />
@@ -168,6 +167,10 @@
     <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildReferencesNodeBuilder.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildReferenceNodeBuilder.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Pads.ProjectPad\ProtobuildContentDefinitionNodeBuilder.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildStandardDefinition.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildNonStandardDefinition.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\ProtobuildDefinitionLoader.cs" />
+    <Compile Include="MonoDevelop.Projects.Formats.Protobuild\IProtobuildDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -192,6 +195,14 @@
     <ProjectReference Include="..\GLWidget\GLWidget.csproj">
       <Project>{34627299-AB51-4C99-B5DA-C03EB751B387}</Project>
       <Name>GLWidget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\monodevelop\main\src\core\MonoDevelop.Core\MonoDevelop.Core.csproj">
+      <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
+      <Name>MonoDevelop.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\monodevelop\main\src\addins\CSharpBinding\CSharpBinding.csproj">
+      <Project>{07CC7654-27D6-421D-A64C-0FFA40456FA2}</Project>
+      <Name>CSharpBinding</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

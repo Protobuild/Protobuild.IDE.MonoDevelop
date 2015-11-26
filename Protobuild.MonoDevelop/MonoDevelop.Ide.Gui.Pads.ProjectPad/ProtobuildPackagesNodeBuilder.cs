@@ -9,7 +9,7 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 		public override Type NodeDataType { get { return typeof(ProtobuildPackages); } }
 
 		public override string GetNodeName (ITreeNavigator thisNode, object dataObject) {
-			return "\x01\x01Packages";
+			return "Packages";
 		}
 
 		public override void BuildNode (ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
@@ -32,6 +32,11 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 		{
 			var packages = (ProtobuildPackages)dataObject;
 			return packages.Count > 0;
+		}
+
+		public override int CompareObjects (ITreeNavigator thisNode, ITreeNavigator otherNode)
+		{
+			return -1;
 		}
 	}
 }

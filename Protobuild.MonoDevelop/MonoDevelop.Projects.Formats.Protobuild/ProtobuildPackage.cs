@@ -17,7 +17,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             package = reference;
 			parentModuleRef = parentModule;
 			Packages = new ProtobuildPackages(this);
-			Definitions = new ItemCollection<ProtobuildDefinition>();
+			Definitions = new ItemCollection<IProtobuildDefinition>();
 			Submodules = new ItemCollection<ProtobuildSubmodule>();
 
 			IsBinary = File.Exists(Path.Combine(FullPath, ".pkg")) &&
@@ -47,7 +47,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
         public ProtobuildPackages Packages { get; set; }
 
-        public ItemCollection<ProtobuildDefinition> Definitions { get; set; }
+        public ItemCollection<IProtobuildDefinition> Definitions { get; set; }
 
         public ItemCollection<ProtobuildSubmodule> Submodules { get; set; }
 

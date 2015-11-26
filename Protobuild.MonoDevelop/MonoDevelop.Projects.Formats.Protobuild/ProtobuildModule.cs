@@ -35,6 +35,7 @@ using MonoDevelop.Core.Execution;
 using MonoDevelop.Projects.Extensions;
 using MonoDevelop.Projects.Formats.MSBuild;
 using MonoDevelop.Ide;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
@@ -55,7 +56,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             shadowSolutions = new Dictionary<string, Solution> ();
 			Packages = new ProtobuildPackages(this);
 			Submodules = new ItemCollection<ProtobuildSubmodule>();
-			Definitions = new ItemCollection<ProtobuildDefinition>();
+			Definitions = new ItemCollection<IProtobuildDefinition>();
 			Initialize(this);
         }
 
@@ -90,6 +91,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			}
 		}
 
+		#if MONODEVELOP_GETDEFAULTCONFIGURATION
+
 		public override string GetDefaultConfiguration() {
 			if (appDomain != null) {
 				return appDomain.HostPlatform;
@@ -97,6 +100,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 			return null;
 		}
+
+		#endif
 
 	    public async Task Load(string path, ProgressMonitor monitor)
 	    {
@@ -163,7 +168,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			}
 		}
 
-		public void OnDefinitionBuilt(ProtobuildDefinition definition)
+		public void OnDefinitionBuilt(ProtobuildStandardDefinition definition)
 		{
 			if (Built != null)
 			{
@@ -203,7 +208,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             DefaultConfigurationId = appDomain.HostPlatform;
 	    }
 
-	    private void EnsureConfigurationPresent (string platform, ProtobuildDefinition item)
+	    private void EnsureConfigurationPresent (string platform, ProtobuildStandardDefinition item)
 	    {
 	        var solutionConfig = Configurations[platform];
 	        if (solutionConfig == null) {
@@ -224,7 +229,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	        }
 
 	        if (folder.Definitions == null) {
-	            folder.Definitions = new ItemCollection<ProtobuildDefinition> ();
+	            folder.Definitions = new ItemCollection<IProtobuildDefinition> ();
 	        }
 
 	        if (folder.Submodules == null) {
@@ -261,22 +266,29 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
             foreach (var definition in moduleInfo.LoadedDefinitions)
             {
-				var definitionItem = ProtobuildDefinition.CreateDefinition(moduleInfo, definition, folder);
-                //definitionItem.ParentSolution = this;
+				var definitionItem = ProtobuildDefinitionLoader.CreateDefinition(moduleInfo, definition, folder);
+				var standardDefinition = definitionItem as ProtobuildStandardDefinition;
+				if (standardDefinition != null) {
+					standardDefinition.ModuleOwnerForConfiguration = this;
+				}
                 //definitionItem.SetItemHandler(new MSBuildHandler(definition.Guid.ToString(), definition.Guid.ToString()));
                 folder.Definitions.Add(definitionItem);
 
 				// Add the definition to the root folder as well so that events
 				// get hooked up correctly.
-				folder.RootFolder.Items.Add(definitionItem);
+				folder.RootFolder.Items.Add((SolutionFolderItem)definitionItem);
 
-                foreach (var config in definitionItem.GetConfigurations ()) {
-                    EnsureConfigurationPresent (config, definitionItem);
-                }
+				if (standardDefinition != null) {
+					foreach (var config in standardDefinition.GetConfigurations ()) {
+						EnsureConfigurationPresent (config, standardDefinition);
+	                }
+				}
 
                 if (moduleInfo.DefaultStartupProject == definition.Name) {
                     this.SingleStartup = true;
-                    this.StartupItem = definitionItem;
+					if (standardDefinition != null) {
+						this.StartupItem = standardDefinition;
+					}
                 }
             }
 		}
@@ -333,7 +345,15 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			await EnsureProjectsAreGeneratedForPlatform(platform, monitor);
 			if (Generated != null)
 			{
-				Generated(this, new SolutionItemEventArgs(null, this));
+				try
+				{
+					Generated(this, new SolutionItemEventArgs(null, this));
+				}
+				catch (Exception ex)
+				{
+					Console.Error.WriteLine("An exception occurred while notifying that generation was complete " + ex);
+					//monitor.ReportError("An exception occurred while notifying that generation was complete", ex);
+				}
 			}
 	    }
 
@@ -425,7 +445,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 	    public ProtobuildPackages Packages { get; set; }
 
-        public ItemCollection<ProtobuildDefinition> Definitions { get; set; }
+        public ItemCollection<IProtobuildDefinition> Definitions { get; set; }
 
         public ItemCollection<ProtobuildSubmodule> Submodules { get; set; }
 
@@ -441,7 +461,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             }
         }
 
-        public async Task<Project> GetShadowProject (ProtobuildDefinition protobuildDefinition, ProgressMonitor monitor,
+        public async Task<Project> GetShadowProject (ProtobuildStandardDefinition protobuildDefinition, ProgressMonitor monitor,
 	        ConfigurationSelector configuration)
 	    {
             var platform = configuration.GetConfiguration(this).Id;
@@ -457,7 +477,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 			collection.Add(Packages);
 			collection.AddRange(Submodules);
-			collection.AddRange(Definitions);
+			collection.AddRange(Definitions.OfType<WorkspaceObject>());
             //collection.AddRange(GetAllDefinitions());
             //collection.AddRange(GetAllPackages().Cast<WorkspaceObject>());
             //collection.AddRange(GetAllSubmodules().Cast<WorkspaceObject>());
@@ -465,12 +485,12 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	        return collection.AsReadOnly ();
 	    }
 
-	    private IEnumerable<ProtobuildDefinition> GetAllDefinitions ()
+	    private IEnumerable<IProtobuildDefinition> GetAllDefinitions ()
 	    {
 	        return WalkModuleTreeForDefinitions (this);
 	    }
 
-	    private static IEnumerable<ProtobuildDefinition> WalkModuleTreeForDefinitions (IProtobuildModule module)
+	    private static IEnumerable<IProtobuildDefinition> WalkModuleTreeForDefinitions (IProtobuildModule module)
 	    {
             if (module.Definitions != null)
             {
@@ -503,8 +523,11 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             }
 	    }
 
-	    public Project GetShadowProject (ProtobuildDefinition protobuildDefinition, string platform)
+		public Project GetShadowProject (ProtobuildStandardDefinition protobuildDefinition, string platform)
         {
+			if (platform == null) {
+				return null;
+			}
 	        if (!shadowSolutions.ContainsKey (platform)) {
 	            return null;
 	        }
@@ -516,6 +539,11 @@ namespace MonoDevelop.Projects.Formats.Protobuild
         {
             return new[] { "Debug" }.ToList().AsReadOnly();
         }
+
+		protected override async Task OnSave (ProgressMonitor monitor)
+		{
+			await Task.WhenAll(this.Definitions.Select(async (x) => { return x.OnSave(monitor); }));
+		}
     }
 
     public interface IProtobuildModule
@@ -524,7 +552,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
         ProtobuildPackages Packages { get; set; }
 
-        ItemCollection<ProtobuildDefinition> Definitions { get; set; }
+        ItemCollection<IProtobuildDefinition> Definitions { get; set; }
 
         ItemCollection<ProtobuildSubmodule> Submodules { get; set; }
 

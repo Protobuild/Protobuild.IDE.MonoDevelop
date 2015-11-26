@@ -9,10 +9,6 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 	{
 		public override Type NodeDataType { get { return typeof(ProtobuildPackage); } }
 
-		public override string GetNodeName (ITreeNavigator thisNode, object dataObject) {
-			return ((IProtobuildModule)dataObject).Name;
-		}
-
 		public override void BuildNode(ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
 		{
 			ProtobuildPackage package = (ProtobuildPackage) dataObject;

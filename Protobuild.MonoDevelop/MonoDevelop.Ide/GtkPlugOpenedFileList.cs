@@ -33,7 +33,7 @@ namespace MonoDevelop.Ide
 {
 	public class GtkPlugOpenedFileList : IOpenedFileList<GtkPlugOpenedFile>
 	{
-		public ProtobuildDefinition Definition { get; set; }
+		public ProtobuildStandardDefinition Definition { get; set; }
 
 		public string HostProcessPath { get; set; }
 

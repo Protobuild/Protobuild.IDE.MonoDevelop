@@ -14,35 +14,35 @@ namespace MonoDevelop.Ide
 {
     public abstract class ProtobuildEditorHost<T, T2> : IProtobuildEditorHost where T : IOpenedFileList<T2>
     {
-        protected Dictionary<ProtobuildDefinition, T> openedFiles;
+        protected Dictionary<ProtobuildStandardDefinition, T> openedFiles;
 
-        private Dictionary<ProtobuildDefinition, DateTime> lastModified;
+		private Dictionary<ProtobuildStandardDefinition, DateTime> lastModified;
 
-        protected Dictionary<ProtobuildDefinition, List<IDisplayBinding>> registeredBindings;
+		protected Dictionary<ProtobuildStandardDefinition, List<IDisplayBinding>> registeredBindings;
 
         protected ProtobuildEditorHost ()
         {
-            openedFiles = new Dictionary<ProtobuildDefinition, T> ();
-            lastModified = new Dictionary<ProtobuildDefinition, DateTime> ();
-            registeredBindings = new Dictionary<ProtobuildDefinition, List<IDisplayBinding>> ();
+			openedFiles = new Dictionary<ProtobuildStandardDefinition, T> ();
+			lastModified = new Dictionary<ProtobuildStandardDefinition, DateTime> ();
+			registeredBindings = new Dictionary<ProtobuildStandardDefinition, List<IDisplayBinding>> ();
         }
 
         public void Reload(object whatChanged)
         {
             if (whatChanged is ProtobuildModule)
             {
-                foreach (var definition in ((ProtobuildModule)whatChanged).Definitions)
+				foreach (var definition in ((ProtobuildModule)whatChanged).Definitions.OfType<ProtobuildStandardDefinition>())
                 {
                     ScanOutputForChanges(definition);
                 }
             }
-            else if (whatChanged is ProtobuildDefinition)
+			else if (whatChanged is ProtobuildStandardDefinition)
             {
-                ScanOutputForChanges((ProtobuildDefinition)whatChanged);
+				ScanOutputForChanges((ProtobuildStandardDefinition)whatChanged);
             }
         }
 
-        private void ScanOutputForChanges(ProtobuildDefinition definition)
+		private void ScanOutputForChanges(ProtobuildStandardDefinition definition)
         {
             if (definition.Type != "IDEEditor")
             {
@@ -124,17 +124,17 @@ namespace MonoDevelop.Ide
             barrier.SignalAndWait();
         }
 
-        protected abstract T StartInfo(ProtobuildDefinition definition, string outputPath);
+		protected abstract T StartInfo(ProtobuildStandardDefinition definition, string outputPath);
 
         protected abstract bool ShouldReload(T2 openedFile);
 
-        protected abstract void SuspendEditor(ProtobuildDefinition definition, T2 openedFile);
+		protected abstract void SuspendEditor(ProtobuildStandardDefinition definition, T2 openedFile);
 
-        protected abstract void ResumeEditor(ProtobuildDefinition definition, T2 openedFile);
+		protected abstract void ResumeEditor(ProtobuildStandardDefinition definition, T2 openedFile);
 
-        protected abstract void StopInfo (ProtobuildDefinition definition);
+		protected abstract void StopInfo (ProtobuildStandardDefinition definition);
 
-        protected abstract void InitializeDefinitionAndRegisterBindings(ProtobuildDefinition definition, T targetList);
+		protected abstract void InitializeDefinitionAndRegisterBindings(ProtobuildStandardDefinition definition, T targetList);
 
         protected abstract void RegisterBinding (T openFileList, string ext);
     }

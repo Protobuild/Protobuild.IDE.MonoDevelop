@@ -51,17 +51,17 @@ namespace MonoDevelop.Ide
 	/// </summary>
 	public class GtkPlugBasedProtobuildEditorHost : ProtobuildEditorHost<GtkPlugOpenedFileList, GtkPlugOpenedFile>
     {
-		private Dictionary<ProtobuildDefinition, GtkPlugOpenedFileList> openedFiles;
+		private Dictionary<ProtobuildStandardDefinition, GtkPlugOpenedFileList> openedFiles;
 
-		private Dictionary<ProtobuildDefinition, DateTime> lastModified;
+		private Dictionary<ProtobuildStandardDefinition, DateTime> lastModified;
 
-		private Dictionary<ProtobuildDefinition, List<IDisplayBinding>> registeredBindings;
+		private Dictionary<ProtobuildStandardDefinition, List<IDisplayBinding>> registeredBindings;
 
 		public GtkPlugBasedProtobuildEditorHost()
 		{
-			openedFiles = new Dictionary<ProtobuildDefinition, GtkPlugOpenedFileList>();
-			lastModified = new Dictionary<ProtobuildDefinition, DateTime>();
-			registeredBindings = new Dictionary<ProtobuildDefinition, List<IDisplayBinding>>();
+			openedFiles = new Dictionary<ProtobuildStandardDefinition, GtkPlugOpenedFileList>();
+			lastModified = new Dictionary<ProtobuildStandardDefinition, DateTime>();
+			registeredBindings = new Dictionary<ProtobuildStandardDefinition, List<IDisplayBinding>>();
 
 			GLib.Timeout.Add(100, new GLib.TimeoutHandler(() => {
 				foreach (var openFile in openedFiles)
@@ -87,7 +87,7 @@ namespace MonoDevelop.Ide
 			DisplayBindingService.RegisterRuntimeDisplayBinding(binding);
 		}
 
-        protected override GtkPlugOpenedFileList StartInfo(ProtobuildDefinition definition, string outputPath)
+		protected override GtkPlugOpenedFileList StartInfo(ProtobuildStandardDefinition definition, string outputPath)
 	    {
             var openedFileList = new GtkPlugOpenedFileList();
             openedFileList.Definition = definition;
@@ -103,7 +103,7 @@ namespace MonoDevelop.Ide
 	               !openedFile.ViewContent.IsSuspended;
 	    }
 
-        protected override void SuspendEditor(ProtobuildDefinition definition, GtkPlugOpenedFile openedFile)
+		protected override void SuspendEditor(ProtobuildStandardDefinition definition, GtkPlugOpenedFile openedFile)
 	    {
 			#if MONODEVELOP_6_PENDING
             Console.WriteLine("Suspending editor for " + openedFile.FileReference + " in " + definition.Name);
@@ -111,7 +111,7 @@ namespace MonoDevelop.Ide
 			#endif
 	    }
 
-	    protected override void ResumeEditor (ProtobuildDefinition definition, GtkPlugOpenedFile openedFile)
+		protected override void ResumeEditor (ProtobuildStandardDefinition definition, GtkPlugOpenedFile openedFile)
 	    {
 			#if MONODEVELOP_6_PENDING
             Console.WriteLine("Resuming editor for " + openedFile.FileReference + " in " + definition.Name);
@@ -119,23 +119,26 @@ namespace MonoDevelop.Ide
 			#endif
 	    }
 
-	    protected override void StopInfo (ProtobuildDefinition definition)
+		protected override void StopInfo (ProtobuildStandardDefinition definition)
 	    {
-            if (openedFiles[definition].InfoProcess != null)
-            {
-                Console.WriteLine("Stopping info process in " + definition.Name);
-                try
-                {
-                    openedFiles[definition].InfoProcess.Kill();
-                }
-                catch (InvalidOperationException)
-                {
-                }
-                openedFiles[definition].NetworkRequestLayer.Stop();
-            }
+			if (openedFiles.ContainsKey(definition))
+			{
+	            if (openedFiles[definition].InfoProcess != null)
+	            {
+	                Console.WriteLine("Stopping info process in " + definition.Name);
+	                try
+	                {
+	                    openedFiles[definition].InfoProcess.Kill();
+	                }
+	                catch (InvalidOperationException)
+	                {
+	                }
+	                openedFiles[definition].NetworkRequestLayer.Stop();
+	            }
+			}
 	    }
 
-	    protected override void InitializeDefinitionAndRegisterBindings (ProtobuildDefinition definition,
+		protected override void InitializeDefinitionAndRegisterBindings (ProtobuildStandardDefinition definition,
 	        GtkPlugOpenedFileList targetList)
 	    {
             targetList.NetworkRequestLayer = new GtkPlugNetworkRequestLayer(targetList.SocketComms);
