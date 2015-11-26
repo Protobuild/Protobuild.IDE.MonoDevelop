@@ -7,38 +7,36 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Projects.Formats.Protobuild;
 
-#if MONODEVELOP_5
-
 namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 {
-    class ProtobuildPackagesNodeBuilder : TypeNodeBuilder
+    class ProtobuildReferencesNodeBuilder : TypeNodeBuilder
     {
         public override Type NodeDataType
         {
-            get { return typeof (ProtobuildPackages); }
+            get { return typeof (ProtobuildReferences); }
         }
 
         public override Type CommandHandlerType
         {
-            get { return typeof(ProtobuildPackagesNodeCommandHandler); }
+            get { return typeof(ProtobuildReferencesNodeCommandHandler); }
         }
 
         public override void BuildNode(ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
         {
-            nodeInfo.Label = GLib.Markup.EscapeText("Packages");
-			nodeInfo.Icon = Context.GetIcon("md-package-source");
-			nodeInfo.ClosedIcon = Context.GetIcon ("md-package-source");
+            nodeInfo.Label = GLib.Markup.EscapeText("References");
+            nodeInfo.Icon = Context.GetIcon(Stock.OpenReferenceFolder);
+            nodeInfo.ClosedIcon = Context.GetIcon (Stock.ClosedReferenceFolder);
         }
 
         public override string GetNodeName(ITreeNavigator thisNode, object dataObject)
         {
-            return "Packages";
+            return "References";
         }
 
         public override void BuildChildNodes(ITreeBuilder ctx, object dataObject)
         {
-            ProtobuildPackages packages = (ProtobuildPackages)dataObject;
-            foreach (var entry in packages)
+            ProtobuildReferences references = (ProtobuildReferences)dataObject;
+            foreach (var entry in references)
             {
                 ctx.AddChild(entry);
             }
@@ -46,8 +44,8 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
         public override bool HasChildNodes(ITreeBuilder builder, object dataObject)
         {
-            ProtobuildPackages packages = (ProtobuildPackages)dataObject;
-            return packages.Count > 0;
+            ProtobuildReferences references = (ProtobuildReferences)dataObject;
+            return references.Count > 0;
         }
 
         public override int CompareObjects(ITreeNavigator thisNode, ITreeNavigator otherNode)
@@ -56,10 +54,8 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
         }
     }
 
-    class ProtobuildPackagesNodeCommandHandler : NodeCommandHandler
+    class ProtobuildReferencesNodeCommandHandler : NodeCommandHandler
     {
         
     }
 }
-
-#endif

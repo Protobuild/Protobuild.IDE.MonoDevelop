@@ -16,6 +16,9 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             module = moduleInfo;
             package = reference;
 			parentModuleRef = parentModule;
+			Packages = new ProtobuildPackages(this);
+			Definitions = new ItemCollection<ProtobuildDefinition>();
+			Submodules = new ItemCollection<ProtobuildSubmodule>();
 
 			IsBinary = File.Exists(Path.Combine(FullPath, ".pkg")) &&
 				!File.Exists(Path.Combine(FullPath, ".git")) &&
@@ -26,6 +29,10 @@ namespace MonoDevelop.Projects.Formats.Protobuild
         {
             get { return package.Folder; }
         }
+
+		string IProtobuildModule.Name {
+			get { return Folder; }
+		}
 
         public string Uri { get { return package.Uri; } }
 
@@ -50,17 +57,17 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
         protected override string OnGetName ()
         {
-            throw new NotImplementedException ();
+			return Folder;
         }
 
         protected override string OnGetItemDirectory ()
         {
-            throw new NotImplementedException ();
+			return module.Path;
         }
 
         protected override string OnGetBaseDirectory ()
-        {
-            throw new NotImplementedException ();
+		{
+			return module.Path;
         }
     }
 }

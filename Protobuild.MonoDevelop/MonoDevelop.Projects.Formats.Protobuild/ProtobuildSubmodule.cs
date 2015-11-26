@@ -19,12 +19,10 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             parentModule = latestModuleInfo;
             currentModule = submodule;
 			RootFolder = rootFolder;
-        }
-
-        public string Name
-        {
-            get { return currentModule.Name; }
-        }
+			Packages = new ProtobuildPackages(this);
+			Definitions = new ItemCollection<ProtobuildDefinition>();
+			Submodules = new ItemCollection<ProtobuildSubmodule>();
+		}
 
         public ProtobuildPackages Packages { get; set; }
 
@@ -57,17 +55,17 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
         protected override string OnGetName ()
         {
-            throw new NotImplementedException ();
+			return currentModule.Name; 
         }
 
         protected override string OnGetItemDirectory ()
-        {
-            throw new NotImplementedException ();
+		{
+			return currentModule.Path;
         }
 
         protected override string OnGetBaseDirectory ()
-        {
-            throw new NotImplementedException ();
+		{
+			return currentModule.Path;
         }
     }
 }

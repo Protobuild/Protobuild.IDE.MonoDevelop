@@ -34,6 +34,7 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Execution;
 using MonoDevelop.Projects.Extensions;
 using MonoDevelop.Projects.Formats.MSBuild;
+using MonoDevelop.Ide;
 
 namespace MonoDevelop.Projects.Formats.Protobuild
 {
@@ -52,6 +53,9 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	    public ProtobuildModule ()
 	    {
             shadowSolutions = new Dictionary<string, Solution> ();
+			Packages = new ProtobuildPackages(this);
+			Submodules = new ItemCollection<ProtobuildSubmodule>();
+			Definitions = new ItemCollection<ProtobuildDefinition>();
 			Initialize(this);
         }
 
@@ -86,11 +90,19 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 			}
 		}
 
+		public override string GetDefaultConfiguration() {
+			if (appDomain != null) {
+				return appDomain.HostPlatform;
+			}
+
+			return null;
+		}
+
 	    public async Task Load(string path, ProgressMonitor monitor)
 	    {
 			if (appDomain != null)
 			{
-                monitor.BeginTask ("Stopping Protobuild...", 1, 1);
+                monitor.BeginTask ("Stopping Protobuild...", 1);
 				monitor.BeginStep();
 				appDomain.UnloadAppDomain();
 				appDomain.ProtobuildChangedEvent -= HandleProtobuildChangedEvent;
@@ -98,7 +110,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				monitor.EndTask();
 			}
 
-            monitor.BeginTask("Starting Protobuild...", 1, 1);
+            monitor.BeginTask("Starting Protobuild...", 1);
 			monitor.BeginStep();
 			appDomain = new ProtobuildAppDomain(path);
 			appDomain.ProtobuildChangedEvent += HandleProtobuildChangedEvent;
@@ -109,8 +121,9 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             // We have to perform an initial generation on load so we have a set of
             // projects that can be used for the type system.  Also we generate before
             // loading projects because generation might trigger package resolution.
-	        ActiveConfiguration = appDomain.HostPlatform;
-            await EnsureProjectsAreGeneratedForPlatform(appDomain.HostPlatform, monitor);
+	        //ActiveConfiguration = appDomain.HostPlatform;
+			//IdeApp.Workspace.ActiveConfigurationId = appDomain.HostPlatform;
+            //await EnsureProjectsAreGeneratedForPlatform(appDomain.HostPlatform, monitor);
 
             //monitor.BeginStepTask("Loading projects...", 1, 1);
 		    ReloadProjects ();
@@ -207,7 +220,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	    private void LoadSubmodule (IProtobuildModule folder, ProtobuildModuleInfo moduleInfo)
         {
 	        if (folder.Packages == null) {
-	            folder.Packages = new ProtobuildPackages ();
+	            folder.Packages = new ProtobuildPackages (folder);
 	        }
 
 	        if (folder.Definitions == null) {
@@ -225,16 +238,16 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				var packageItem = new ProtobuildPackage(moduleInfo, package, folder);
                 //packageItem.SetItemHandler(new MSBuildHandler(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
                 folder.Packages.Add(packageItem);
-                packagesByFolder.Add(package.Folder.Replace ('\\','/'), packageItem);
+				packagesByFolder.Add(moduleInfo.Path + '/' + package.Folder.Replace ('\\','/'), packageItem);
             }
 
             foreach (var submodule in moduleInfo.LoadedSubmodules) {
-                var submoduleRelativeFolder = submodule.Path.Substring (moduleInfo.Path.Length).Trim (new[] {'/', '\\'});
-                submoduleRelativeFolder = submoduleRelativeFolder.Replace ('\\', '/');
+				//var submoduleRelativeFolder = GetRelativePath(moduleInfo.Path, submodule.Path);
+                //submoduleRelativeFolder = submoduleRelativeFolder.Replace ('\\', '/');
 
-                if (packagesByFolder.ContainsKey (submoduleRelativeFolder)) {
+				if (packagesByFolder.ContainsKey (submodule.Path)) {
                     // Place all the projects under the package's folder instead.
-                    LoadSubmodule(packagesByFolder[submoduleRelativeFolder], submodule);
+					LoadSubmodule(packagesByFolder[submodule.Path], submodule);
                 }
                 else
                 {
@@ -248,7 +261,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
             foreach (var definition in moduleInfo.LoadedDefinitions)
             {
-                var definitionItem = new ProtobuildDefinition(moduleInfo, definition, folder);
+				var definitionItem = ProtobuildDefinition.CreateDefinition(moduleInfo, definition, folder);
                 //definitionItem.ParentSolution = this;
                 //definitionItem.SetItemHandler(new MSBuildHandler(definition.Guid.ToString(), definition.Guid.ToString()));
                 folder.Definitions.Add(definitionItem);
@@ -266,7 +279,23 @@ namespace MonoDevelop.Projects.Formats.Protobuild
                     this.StartupItem = definitionItem;
                 }
             }
-	    }
+		}
+
+		private string GetRelativePath(string from, string to)
+		{
+			try
+			{
+				var current = Environment.CurrentDirectory;
+				from = System.IO.Path.Combine(current, from.Replace('\\', '/'));
+				to = System.IO.Path.Combine(current, to.Replace('\\', '/'));
+				return (new Uri(from).MakeRelativeUri(new Uri(to)))
+					.ToString().Replace('/', '\\');
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
+			}
+		}
 
         #if MONODEVELOP_5
 
@@ -298,7 +327,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
 		public event SolutionItemEventHandler Generated;
 
-	    public async void Generate (ProgressMonitor monitor, ConfigurationSelector configuration)
+	    public async Task Generate (ProgressMonitor monitor, ConfigurationSelector configuration)
         {
             var platform = configuration.GetConfiguration(this).Id;
 			await EnsureProjectsAreGeneratedForPlatform(platform, monitor);
@@ -347,7 +376,12 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
                         try {
                             monitor.BeginTask ("Generating .NET projects for " + platform + "...", 1);
-                            appDomain.RunExecutableWithArguments (latestModuleInfo, "--generate " + platform);
+								monitor.BeginStep();
+								appDomain.RunExecutableWithArguments (latestModuleInfo, "--generate " + platform, x => {
+									monitor.EndTask ();
+									monitor.BeginTask (x, 1);
+									monitor.BeginStep();
+								});
                         }
                         catch (Exception ex) {
                             monitor.ReportError ("Failed to generate projects", ex);
@@ -358,10 +392,11 @@ namespace MonoDevelop.Projects.Formats.Protobuild
                         }
 
                         try {
-                            monitor.BeginTask ("Caching .NET solution for " + platform + "...", 1);
+								monitor.BeginTask ("Caching .NET solution for " + platform + "...", 1);
+								monitor.BeginStep();
                             var path = Path.Combine (latestModuleInfo.Path,
                                 latestModuleInfo.Name + "." + platform + ".sln");
-                            shadowSolutions[platform] = (Solution)Services.ProjectService.ReadWorkspaceItem(monitor, path).Result;
+								shadowSolutions[platform] = (Solution)Services.ProjectService.ReadWorkspaceItem(new ProgressMonitor(), path).Result;
                         }
                         catch (Exception ex) {
                             monitor.ReportError ("Failed to cache solution", ex);
@@ -420,16 +455,14 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 	    {
             var collection = new List<WorkspaceObject> ();
 
-            collection.AddRange(GetAllDefinitions());
+			collection.Add(Packages);
+			collection.AddRange(Submodules);
+			collection.AddRange(Definitions);
+            //collection.AddRange(GetAllDefinitions());
             //collection.AddRange(GetAllPackages().Cast<WorkspaceObject>());
             //collection.AddRange(GetAllSubmodules().Cast<WorkspaceObject>());
 
 	        return collection.AsReadOnly ();
-	    }
-
-	    private IEnumerable<ProtobuildPackage> GetAllPackages ()
-	    {
-            throw new NotImplementedException();
 	    }
 
 	    private IEnumerable<ProtobuildDefinition> GetAllDefinitions ()
@@ -470,11 +503,6 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             }
 	    }
 
-	    private IEnumerable<ProtobuildSubmodule> GetAllSubmodules ()
-        {
-            throw new NotImplementedException();
-	    }
-
 	    public Project GetShadowProject (ProtobuildDefinition protobuildDefinition, string platform)
         {
 	        if (!shadowSolutions.ContainsKey (platform)) {
@@ -492,6 +520,8 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
     public interface IProtobuildModule
     {
+		string Name { get; }
+
         ProtobuildPackages Packages { get; set; }
 
         ItemCollection<ProtobuildDefinition> Definitions { get; set; }

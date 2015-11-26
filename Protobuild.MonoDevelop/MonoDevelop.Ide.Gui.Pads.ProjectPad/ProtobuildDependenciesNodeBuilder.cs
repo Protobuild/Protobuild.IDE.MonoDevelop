@@ -7,11 +7,9 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Projects.Formats.Protobuild;
 
-#if MONODEVELOP_5
-
 namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 {
-    class ProtobuildDependenciesNodeBuilder : TypeNodeBuilder
+    public class ProtobuildDependenciesNodeBuilder : TypeNodeBuilder
     {
         public override Type NodeDataType
         {
@@ -61,5 +59,3 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
         
     }
 }
-
-#endif

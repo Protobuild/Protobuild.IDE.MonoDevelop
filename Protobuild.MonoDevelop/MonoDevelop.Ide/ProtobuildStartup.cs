@@ -50,18 +50,21 @@ namespace MonoDevelop.Ide
                 registeredModules.Clear ();
             };
             IdeApp.Workspace.ActiveConfigurationChanged += (sender, args) =>
-            {
-                foreach (var module in IdeApp.Workspace.GetAllSolutions().OfType<ProtobuildModule>()) {
-                    var module1 = module;
-                    /*DispatchService.BackgroundDispatch(() => {
-                        var message = "Starting generation of .NET projects for " +
-                                      IdeApp.Workspace.ActiveConfigurationId + "...";
-                        using (var statusMonitor = IdeApp.Workbench.ProgressMonitors.GetBuildProgressMonitor(message)) {*/
-                    module1.Generate (new ProgressMonitor(), IdeApp.Workspace.ActiveConfiguration);
-                            module1.SetActiveConfiguration (IdeApp.Workspace.ActiveConfigurationId);
-                        //}
-                    //});
-                }
+			{
+				Task.Run(async () =>
+				{
+	            	foreach (var module in IdeApp.Workspace.GetAllSolutions().OfType<ProtobuildModule>()) {
+	                	var module1 = module;
+						using (var monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor(
+							"Project generation for " + module1.Name + "...",
+							"md-spinner-14",
+							true))
+						{
+							await module1.Generate (monitor, IdeApp.Workspace.ActiveConfiguration);
+							module1.SetActiveConfiguration (IdeApp.Workspace.ActiveConfigurationId);
+						}
+					}
+				});
             };
         }
 

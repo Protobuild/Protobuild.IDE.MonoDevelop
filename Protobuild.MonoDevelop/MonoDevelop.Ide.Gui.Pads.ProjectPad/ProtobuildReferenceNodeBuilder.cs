@@ -7,40 +7,36 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Projects.Formats.Protobuild;
 
-#if MONODEVELOP_5
-
 namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 {
-	class ProtobuildExternalRefNodeBuilder : TypeNodeBuilder
+    class ProtobuildReferenceNodeBuilder : TypeNodeBuilder
     {
         public override Type NodeDataType
         {
-			get { return typeof (ProtobuildExternalRef); }
+            get { return typeof (ProtobuildReference); }
         }
 
         public override Type CommandHandlerType
         {
-			get { return typeof (ProtobuildExternalRefNodeCommandHandler); }
+            get { return typeof (ProtobuildReferenceNodeCommandHandler); }
         }
 
         public override void BuildNode(ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
         {
-			var externalRef = (ProtobuildExternalRef) dataObject;
+            ProtobuildReference reference = (ProtobuildReference)dataObject;
 
-			nodeInfo.Label = GLib.Markup.EscapeText(externalRef.Name ?? externalRef.Path);
-			nodeInfo.Icon = Context.GetIcon(Stock.Reference);
+            nodeInfo.Icon = Context.GetIcon(MonoDevelop.Ide.Gui.Stock.Reference);
+            nodeInfo.Label = GLib.Markup.EscapeText (reference.Name);
         }
 
         public override string GetNodeName(ITreeNavigator thisNode, object dataObject)
         {
-			return ((ProtobuildExternalRef)dataObject).Name ?? ((ProtobuildExternalRef)dataObject).Path;
+            return ((ProtobuildReference)dataObject).Name;
         }
     }
 
-	class ProtobuildExternalRefNodeCommandHandler : NodeCommandHandler
+    class ProtobuildReferenceNodeCommandHandler : NodeCommandHandler
     {
         
     }
 }
-
-#endif

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Projects.Formats.Protobuild;
-#if MONODEVELOP_5
+
 namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 {
 	class ProtobuildContentSourceRuleNodeBuilder : TypeNodeBuilder
@@ -75,4 +75,3 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
         
     }
 }
-#endif

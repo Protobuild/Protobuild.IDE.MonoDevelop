@@ -7,8 +7,6 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Projects.Formats.Protobuild;
 
-#if MONODEVELOP_5
-
 namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 {
     class ProtobuildServicesNodeBuilder : TypeNodeBuilder
@@ -61,5 +59,3 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
         
     }
 }
-
-#endif

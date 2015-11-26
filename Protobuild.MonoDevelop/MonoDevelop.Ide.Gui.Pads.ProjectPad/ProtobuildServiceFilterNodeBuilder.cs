@@ -7,25 +7,23 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Projects.Formats.Protobuild;
 
-#if MONODEVELOP_5
-
 namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 {
-    class ProtobuildPlatformFilterNodeBuilder : TypeNodeBuilder
+    class ProtobuildServiceFilterNodeBuilder : TypeNodeBuilder
     {
         public override Type NodeDataType
         {
-            get { return typeof (ProtobuildPlatformFilter); }
+			get { return typeof (ProtobuildServiceFilter); }
         }
 
         public override Type CommandHandlerType
         {
-			get { return typeof(ProtobuildPlatformFilterNodeCommandHandler); }
+			get { return typeof(ProtobuildServiceFilterNodeCommandHandler); }
         }
 
         public override void BuildNode(ITreeBuilder treeBuilder, object dataObject, NodeInfo nodeInfo)
         {
-			var filter = (ProtobuildPlatformFilter)dataObject;
+			var filter = (ProtobuildServiceFilter)dataObject;
 
 			nodeInfo.Label = GLib.Markup.EscapeText(filter.Name);
 			nodeInfo.Icon = Context.GetIcon(Stock.OpenFolder);
@@ -34,12 +32,12 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
         public override string GetNodeName(ITreeNavigator thisNode, object dataObject)
         {
-			return ((ProtobuildPlatformFilter)dataObject).Name;
+			return ((ProtobuildServiceFilter)dataObject).Name;
         }
 
         public override void BuildChildNodes(ITreeBuilder ctx, object dataObject)
         {
-			var filter = (ProtobuildPlatformFilter)dataObject;
+			var filter = (ProtobuildServiceFilter)dataObject;
 			foreach (var entry in filter.Items)
             {
                 ctx.AddChild(entry);
@@ -48,8 +46,8 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
 
         public override bool HasChildNodes(ITreeBuilder builder, object dataObject)
         {
-			var filter = (ProtobuildPlatformFilter)dataObject;
-            return filter.Items.Count > 0;
+			var filter = (ProtobuildServiceFilter)dataObject;
+			return filter.Items.Count > 0;
         }
 
         public override int CompareObjects(ITreeNavigator thisNode, ITreeNavigator otherNode)
@@ -58,10 +56,8 @@ namespace MonoDevelop.Ide.Gui.Pads.ProjectPad
         }
     }
 
-	class ProtobuildPlatformFilterNodeCommandHandler : NodeCommandHandler
+	class ProtobuildServiceFilterNodeCommandHandler : NodeCommandHandler
     {
         
     }
 }
-
-#endif

@@ -125,7 +125,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
             return domainBehaviour.LoadModule(rootPath);
 		}
 
-		public void RunExecutableWithArguments(ProtobuildModuleInfo module, string args)
+		public void RunExecutableWithArguments(ProtobuildModuleInfo module, string args, Action<string> lineOutputted)
 		{
 			var protobuildPath = System.IO.Path.Combine(module.Path, "Protobuild.exe");
 
@@ -163,6 +163,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				{
 					if (!string.IsNullOrEmpty(eventArgs.Data))
 					{
+						lineOutputted(eventArgs.Data);
 						//monitor.Log.WriteLine(eventArgs.Data);
 					}
 				};
@@ -170,6 +171,7 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				{
 					if (!string.IsNullOrEmpty(eventArgs.Data))
 					{
+						lineOutputted(eventArgs.Data);
 						//monitor.Log.WriteLine(eventArgs.Data);
 					}
 				};
@@ -179,9 +181,9 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 				p.WaitForExit();
 
 				if (p.ExitCode == 0) {
-					//monitor.ReportSuccess("Protobuild.exe " + args + " completed with exit code 0.");
+					lineOutputted("Protobuild.exe " + args + " completed with exit code 0.");
 				} else {
-					//monitor.ReportError("Protobuild.exe " + args + " failed with non-zero exit code.", null);
+					lineOutputted("Protobuild.exe " + args + " failed with non-zero exit code.");
 				}
 			}
         }

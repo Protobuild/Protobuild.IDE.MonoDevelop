@@ -17,34 +17,55 @@ namespace MonoDevelop.Projects.Formats.Protobuild
 
         private readonly ProtobuildDefinitionInfo definition;
 
-		public ProtobuildDefinition (ProtobuildModuleInfo modulel, ProtobuildDefinitionInfo definitionl, IProtobuildModule moduleObj)
+		private readonly XmlDocument document;
+
+		private readonly IProtobuildModule moduleObj;
+
+		public static ProtobuildDefinition CreateDefinition(ProtobuildModuleInfo modulel, ProtobuildDefinitionInfo definitionl, IProtobuildModule moduleObj)
+		{
+			var document = new XmlDocument ();
+			document.Load(definitionl.DefinitionPath);
+
+			switch (definitionl.Type) {
+			case "External":
+				return new ProtobuildExternalDefinition(modulel, definitionl, document, moduleObj);
+			case "Content":
+				return new ProtobuildContentDefinition(modulel, definitionl, document, moduleObj);
+			default:
+				return new ProtobuildDefinition(modulel, definitionl, document, moduleObj);
+			}
+		}
+
+		protected ProtobuildDefinition (ProtobuildModuleInfo modulel, ProtobuildDefinitionInfo definitionl, XmlDocument document, IProtobuildModule moduleObj)
         {
             module = modulel;
-            definition = definitionl;
+			definition = definitionl;
+			this.document = document;
+			this.moduleObj = moduleObj;
 
-            Initialize(this);
-
-            Configurations.Clear ();
-
-			var document = new XmlDocument ();
-			document.Load(definition.DefinitionPath);
-
-            switch (definition.Type) {
-				case "External":
-					ImportExternalProject(document, moduleObj);
-					break;
-				case "Content":
-					ImportContentProject(document, moduleObj);
-                    break;
-				default:
-					ImportStandardProject(document, moduleObj);
-                    break;
-            }
-
-            base.Name = definition.Name;
+			Initialize(this);
         }
 
+		protected override void OnExtensionChainInitialized ()
+		{
+			base.OnExtensionChainInitialized ();
 
+			Configurations.Clear ();
+
+			switch (definition.Type) {
+			case "External":
+				ImportExternalProject(document, moduleObj);
+				break;
+			case "Content":
+				ImportContentProject(document, moduleObj);
+				break;
+			default:
+				ImportStandardProject(document, moduleObj);
+				break;
+			}
+
+			base.Name = definition.Name;
+		}
 
 		#region Standard projects
 
