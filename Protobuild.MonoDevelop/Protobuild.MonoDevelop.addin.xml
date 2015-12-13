@@ -13,111 +13,11 @@
     </Runtime>
 
     <Dependencies>
-        <Addin id = "Core"          version = "6.0"/>
-        <Addin id = "Ide"           version = "6.0"/>
+        <Addin id = "Core"          version = "5.0"/>
+        <Addin id = "Ide"           version = "5.0"/>
     </Dependencies>
-    
-    <Extension path = "/MonoDevelop/ProjectModel/WorkspaceObjectReaders">
-      <Class id="Protobuild" class = "MonoDevelop.Projects.Formats.Protobuild.ProtobuildSerializationExtension" />
+
+    <Extension path = "/MonoDevelop/Ide/ProjectTemplateWizards">
+      <Class id="ProtobuildWizard" class="MonoDevelop.Protobuild.NewProjectWizard" />
     </Extension>
-    
-    <Extension path = "/MonoDevelop/Ide/Commands">
-	  <Category _name = "Protobuild" id = "Protobuild">
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.FileEditPlatformsAndServices"
-          _label = "Edit Platforms and Services" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.ProjectEditPlatformsAndServices"
-          _label = "Edit Platforms and Services" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.ModuleEditPlatforms"
-          _label = "Edit Supported and Default Platforms" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageUpgradeAll"
-          _label = "Upgrade All" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageUpgrade"
-          _label = "Upgrade" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageModifyReference"
-          _label = "Edit URL or Branch" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageEditRedirects"
-          _label = "Edit Redirects" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageSwapToSource"
-          _label = "Swap to Source" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageSwapToBinary"
-          _label = "Swap to Binary" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageAdd"
-          icon = "gtk-add"
-          _label = "Add" />
-      <Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageDelete"
-          _label = "Remove" />
-    </Category>
-	  <Category _name = "File" id = "File">
-    	<Command id = "MonoDevelop.Ide.Commands.ProtobuildCommands.NewModule"
-			defaultHandler = "MonoDevelop.Ide.Commands.NewProtobuildModuleHandler"
-			_label = "_Protobuild Module..."
-			icon = "md-new-solution"
-			_description = "Create a new Protobuild module" />
-    </Category>
-  </Extension>
-<Extension path = "/MonoDevelop/Ide/MainMenu">
-	<ItemSet id = "File" _label = "_File">
-		<ItemSet id = "New" _label = "_New">
-      <CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.NewModule" />
-      </ItemSet>
-      </ItemSet>
-      </Extension>
-      <Extension path = "/MonoDevelop/Ide/StartupHandlers">
-    <Class class = "MonoDevelop.Ide.ProtobuildStartup"/>
-    </Extension>
-<Extension path = "/MonoDevelop/Ide/Pads/ProjectPad">
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildModuleNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildModuleNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackagesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackagesNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackageNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPackageNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildSubmoduleNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildSubmoduleNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDefinitionNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDefinitionNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServicesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServicesNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentSourceRuleNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentSourceRuleNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentDefinitionNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildContentDefinitionNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPlatformFilterNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildPlatformFilterNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServiceFilterNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildServiceFilterNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalRefNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalRefNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalDefinitionNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildExternalDefinitionNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildProjectFileNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildProjectFileNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferenceNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferenceNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferencesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildReferencesNodeBuilder"/>
-    <NodeBuilder id = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDependenciesNodeBuilder" class = "MonoDevelop.Ide.Gui.Pads.ProjectPad.ProtobuildDependenciesNodeBuilder"/>
-  </Extension>
-  <Extension path = "/MonoDevelop/Ide/ContextMenu/ProjectPad">
-  <SeperatorItem id = "ProtobuildPackageSectionStart"/>
-  <Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackages">
-    <CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageAdd" />
-  </Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackages">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageUpgradeAll" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackage">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageUpgrade" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackage">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageModifyReference" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackage">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageEditRedirects" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackage">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageSwapToSource" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackage">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageSwapToBinary" />
-	</Condition>
-  <Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildPackage">
-    <CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.PackageDelete" />
-  </Condition>
-  <SeperatorItem id="ProtobuildPackageSectionEnd"/>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildProjectFile">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.FileEditPlatformsAndServices" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildDefinition">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.ProjectEditPlatformsAndServices" />
-	</Condition>
-	<Condition id="ItemType" value="MonoDevelop.Projects.Formats.Protobuild.ProtobuildModule">
-		<CommandItem id = "MonoDevelop.Ide.Commands.ProtobuildCommands.ModuleEditPlatforms" />
-	</Condition>
-  </Extension>
 </Addin>

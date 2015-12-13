@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<Template>
+	<TemplateConfiguration>
+		<_Name>Example Template</_Name>
+		<Category>crossplat/app</Category>
+		<Icon>md-project-gui</Icon>
+		<Image id="md-gtk2-project" />
+		<LanguageName>C#</LanguageName>
+		<Wizard>MonoDevelop.Protobuild.NewProjectWizard</Wizard>
+		<_Description>
+<![CDATA[Creates a new cross-platform application with Protobuild.]]></_Description>
+		<DefaultFilename>CrossPlatformProject</DefaultFilename>
+	</TemplateConfiguration>
+</Template>
