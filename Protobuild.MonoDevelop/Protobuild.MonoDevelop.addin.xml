@@ -17,7 +17,11 @@
         <Addin id = "Ide"           version = "5.0"/>
     </Dependencies>
 
-    <Extension path = "/MonoDevelop/Ide/ProjectTemplateWizards">
-      <Class id="ProtobuildWizard" class="MonoDevelop.Protobuild.NewProjectWizard" />
+    <Extension path = "/MonoDevelop/Ide/StartupHandlers">
+      <Class class = "Protobuild.MonoDevelop.StartupHandler"/>
+    </Extension>
+
+    <Extension path = "/MonoDevelop/Ide/ProjectTemplatingProviders">
+      <Class class="Protobuild.MonoDevelop.ProtobuildProjectTemplatingProvider" />
     </Extension>
 </Addin>
