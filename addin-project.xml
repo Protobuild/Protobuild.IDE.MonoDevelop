@@ -7,4 +7,9 @@
         <Url>http://protobuild.org/</Url>
         <UpdateRank>Important</UpdateRank>
     </Header>
+    <Project>
+        <AddinFile>Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll</AddinFile>
+        <BuildFile>Protobuild.MonoDevelop.sln</BuildFile>
+        <BuildConfiguration>Release</BuildConfiguration>
+    </Project>
 </Addin>
