@@ -5,7 +5,7 @@ if host-not Windows
   build
   
   if host Linux
-    native-execute /usr/bin/mdtool setup pack Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll
+    native-execute mdtool setup pack Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll
   endif
 
   pack . $TARGET_PLATFORM.tar.lzma $TARGET_PLATFORM Build/filter.txt
