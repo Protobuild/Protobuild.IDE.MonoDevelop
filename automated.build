@@ -1,0 +1,6 @@
+#version 1
+
+if host-not Windows
+  generate
+  build
+endif

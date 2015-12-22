@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExternalProject Name="Protobuild.MonoDevelop">
+
+  <Project 
+    Name="Protobuild.MonoDevelop"
+    Guid="EE5BA96B-4FA5-41ED-88BC-E8FD07EB62FE"
+    Path="Protobuild.MonoDevelop/Protobuild.MonoDevelop.csproj" />
+  
+</ExternalProject>
