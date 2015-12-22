@@ -6,10 +6,28 @@ if host-not Windows
   
   if host Linux
     native-execute mdtool setup pack Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll
+
+    if file-exists /srv/api_key.txt
+      native-execute bash -c 'git checkout $(git rev-parse HEAD)'
+      native-execute bash -c 'rm .git/refs/heads/*'
+      native-execute bash -c 'cp -Rv .git/refs/remotes/origin/* .git/refs/heads/'
+      native-execute bash -c 'rm .git/refs/heads/HEAD'
+    endif
+  endif
+
+  if host MacOS
+    native-execute bash -c '"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool" setup pack Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll'
+
+    if file-exists /Users/june/protobuild_api_key.txt
+      native-execute bash -c 'git checkout $(git rev-parse HEAD)'
+      native-execute bash -c 'rm .git/refs/heads/*'
+      native-execute bash -c 'cp -Rv .git/refs/remotes/origin/* .git/refs/heads/'
+      native-execute bash -c 'rm .git/refs/heads/HEAD'
+    endif
   endif
 
   pack . $TARGET_PLATFORM.tar.lzma $TARGET_PLATFORM Build/filter.txt
-  
+
   if host MacOS
     if file-exists /Users/june/protobuild_api_key.txt
       push /Users/june/protobuild_api_key.txt $TARGET_PLATFORM.tar.lzma http://protobuild.org/hach-que/Protobuild.IDE.MonoDevelop $GIT_COMMIT $TARGET_PLATFORM $GIT_BRANCH --ignore-on-existing
