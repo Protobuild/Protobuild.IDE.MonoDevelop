@@ -6,5 +6,5 @@ rewrite ^Build/Protobuild\.MonoDevelop\.External\.definition$ Build/Projects/Pro
 include ^Protobuild\.MonoDevelop/bin/Debug/(.*)$
 rewrite ^Protobuild\.MonoDevelop/bin/Debug/(.*)$ Binaries/$1
 
-include ^(.*).mpack$
-rewrite ^(.*).mpack$ Protobuild.MonoDevelop.mpack
+include ^MonoDevelop\.Protobuild\.(.*)\.mpack$
+rewrite ^MonoDevelop\.Protobuild\.(.*)\.mpack$ Protobuild.MonoDevelop.mpack
