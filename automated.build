@@ -5,24 +5,26 @@ if host-not Windows
   build
   
   if host Linux
+    native-execute mdtool
     native-execute mdtool setup pack Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll
 
     if file-exists /srv/api_key.txt
       native-execute bash -c 'git checkout $(git rev-parse HEAD)'
       native-execute bash -c 'rm .git/refs/heads/*'
       native-execute bash -c 'cp -Rv .git/refs/remotes/origin/* .git/refs/heads/'
-      native-execute bash -c 'rm .git/refs/heads/HEAD'
+      native-execute bash -c 'rm .git/refs/heads/HEAD || true'
     endif
   endif
 
   if host MacOS
+    native-execute bash -c '"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool"'
     native-execute bash -c '"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool" setup pack Protobuild.MonoDevelop/bin/Debug/Protobuild.MonoDevelop.dll'
 
     if file-exists /Users/june/protobuild_api_key.txt
       native-execute bash -c 'git checkout $(git rev-parse HEAD)'
       native-execute bash -c 'rm .git/refs/heads/*'
       native-execute bash -c 'cp -Rv .git/refs/remotes/origin/* .git/refs/heads/'
-      native-execute bash -c 'rm .git/refs/heads/HEAD'
+      native-execute bash -c 'rm .git/refs/heads/HEAD || true'
     endif
   endif
 
