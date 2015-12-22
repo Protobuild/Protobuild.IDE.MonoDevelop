@@ -5,3 +5,4 @@ build/
 *.userprefs
 /Protobuild.IDE.MonoDevelop.Linux.sln
 /Protobuild.IDE.MonoDevelop.Linux.speccache
+/Linux.tar.lzma

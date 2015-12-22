@@ -1,0 +1,10 @@
+include ^Build/Module.xml$
+include ^Build/Protobuild\.MonoDevelop\.External\.definition$
+
+rewrite ^Build/Protobuild\.MonoDevelop\.External\.definition$ Build/Projects/Protobuild.MonoDevelop.definition
+
+include ^Protobuild\.MonoDevelop/bin/Debug/(.*)$
+rewrite ^Protobuild\.MonoDevelop/bin/Debug/(.*)$ Binaries/$1
+
+include ^(.*).mpack$
+rewrite ^(.*).mpack$ Protobuild.MonoDevelop.mpack
