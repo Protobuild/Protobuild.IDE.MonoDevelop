@@ -10,7 +10,7 @@ if host-not Windows
 
     if file-exists /srv/api_key.txt
       native-execute bash -c 'git checkout $(git rev-parse HEAD)'
-      native-execute bash -c 'rm .git/refs/heads/*'
+      native-execute bash -c 'rm .git/refs/heads/* || true'
       native-execute bash -c 'cp -Rv .git/refs/remotes/origin/* .git/refs/heads/'
       native-execute bash -c 'rm .git/refs/heads/HEAD || true'
     endif
@@ -22,7 +22,7 @@ if host-not Windows
 
     if file-exists /Users/june/protobuild_api_key.txt
       native-execute bash -c 'git checkout $(git rev-parse HEAD)'
-      native-execute bash -c 'rm .git/refs/heads/*'
+      native-execute bash -c 'rm .git/refs/heads/* || true'
       native-execute bash -c 'cp -Rv .git/refs/remotes/origin/* .git/refs/heads/'
       native-execute bash -c 'rm .git/refs/heads/HEAD || true'
     endif
